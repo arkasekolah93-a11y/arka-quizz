@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+  <title>Kuis Arka Belajar - AI Edition</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Press+Start+2P&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Fredoka', sans-serif; background-color: #7dd3fc; background-image: linear-gradient(45deg, rgba(255,255,255,0.2) 25%, transparent 25%, transparent 75%, rgba(255,255,255,0.2) 75%, rgba(255,255,255,0.2)), linear-gradient(45deg, rgba(255,255,255,0.2) 25%, transparent 25%, transparent 75%, rgba(255,255,255,0.2) 75%, rgba(255,255,255,0.2)); background-size: 60px 60px; color: #1e293b; min-height: 100vh; overflow-x: hidden; display: flex; flex-direction: column; }
+    
+    /* Header Style - Identik Arka Belajar */
+    .header { background: #4ade80; padding: 1rem; display: flex; justify-content: center; align-items: center; border-bottom: 8px solid #713f12; border-top: 4px solid #bbf7d0; position: sticky; top: 0; z-index: 50; }
+    .header h1 { font-family: 'Press Start 2P', cursive; font-size: 1.2rem; color: white; text-shadow: 2px 2px 0 #000, -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000; letter-spacing: 1px; text-align: center; }
+    
+    .container { padding: 1.5rem; width: 100%; max-width: 800px; margin: 0 auto; flex: 1; display: flex; flex-direction: column; }
+    
+    /* Neo-Brutalism Cards & Inputs */
+    .card { background: #fff; border-radius: 15px; padding: 1.5rem; border: 4px solid #000; box-shadow: 6px 6px 0 rgba(0,0,0,0.8); margin-bottom: 1.5rem; }
+    .card-header { font-family: 'Press Start 2P', cursive; font-size: 0.8rem; margin-bottom: 1.2rem; padding-bottom: 0.8rem; border-bottom: 3px dashed #cbd5e1; display: flex; align-items: center; gap: 10px; }
+    
+    .form-group { margin-bottom: 1rem; }
+    .form-label { display: block; font-weight: 700; margin-bottom: 0.5rem; font-size: 0.9rem; text-transform: uppercase; }
+    .form-input { width: 100%; padding: 0.8rem; border-radius: 8px; border: 3px solid #000; font-family: 'Fredoka', sans-serif; font-size: 1rem; font-weight: 600; outline: none; transition: all 0.1s; }
+    .form-input:focus { box-shadow: 4px 4px 0 #3b82f6; transform: translate(-2px, -2px); }
+    
+    /* Buttons */
+    .btn { display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem; padding: 0.8rem 1.2rem; border-radius: 10px; font-weight: 700; font-size: 1rem; cursor: pointer; border: 4px solid #000; transition: all 0.1s; text-transform: uppercase; width: 100%; font-family: 'Fredoka', sans-serif; }
+    .btn:active:not(:disabled) { transform: translate(4px, 4px); box-shadow: 0 0 0 #000; }
+    .btn:disabled { opacity: 0.6; cursor: not-allowed; }
+    
+    .btn-primary { background: #fde047; color: #000; box-shadow: 4px 4px 0 #000; }
+    .btn-success { background: #4ade80; color: #000; box-shadow: 4px 4px 0 #000; }
+    .btn-magic { background: #c084fc; color: #fff; box-shadow: 4px 4px 0 #000; }
+    
+    /* Radio Cards */
+    .radio-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(110px, 1fr)); gap: 0.8rem; }
+    .radio-card label { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 0.8rem; border: 3px solid #000; border-radius: 10px; cursor: pointer; font-weight: 700; background: #f8fafc; box-shadow: 3px 3px 0 #000; transition: all 0.1s; text-align: center; height: 100%; }
+    .radio-card input[type="radio"] { display: none; }
+    .radio-card input[type="radio"]:checked + label { background: #93c5fd; transform: translate(2px, 2px); box-shadow: 1px 1px 0 #000; }
+    
+    /* Main Play Area */
+    #playScreen, #resultScreen { display: none; flex-direction: column; gap: 1rem; height: 100%; }
+    
+    .hud-bar { background: #1e293b; color: white; border: 4px solid #000; border-radius: 12px; padding: 1rem; display: flex; justify-content: space-between; align-items: center; box-shadow: 4px 4px 0 #000; }
+    .hud-info span { display: block; }
+    .timer-box { background: #ef4444; padding: 0.5rem 1rem; border-radius: 8px; border: 2px solid #000; font-family: 'Press Start 2P', cursive; font-size: 1rem; }
+    
+    .q-card { flex: 1; background: #fff; border: 4px solid #000; border-radius: 15px; padding: 2rem; box-shadow: 6px 6px 0 #000; display: flex; flex-direction: column; }
+    /* Penyesuaian khusus untuk huruf Arab */
+    .q-text { font-size: 1.8rem; font-weight: 700; text-align: center; margin-bottom: 2rem; line-height: 1.6; flex: 1; display: flex; align-items: center; justify-content: center; direction: rtl; }
+    
+    .opt-btn { width: 100%; text-align: left; padding: 1rem; border: 3px solid #000; border-radius: 10px; background: #f8fafc; font-size: 1.3rem; font-weight: 700; cursor: pointer; transition: all 0.1s; margin-bottom: 0.8rem; box-shadow: 4px 4px 0 #000; direction: rtl; }
+    .opt-btn:active:not(:disabled) { transform: translate(3px, 3px); box-shadow: 1px 1px 0 #000; }
+    .opt-btn.correct { background: #4ade80; color: #000; }
+    .opt-btn.wrong { background: #fca5a5; color: #000; }
+    
+    .feedback-box { margin-top: 1rem; padding: 1rem; border: 3px solid #000; border-radius: 10px; font-weight: 700; text-align: center; display: none; }
+    
+    /* Utilities */
+    .hidden { display: none !important; }
+    #toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: #1e293b; color: white; padding: 10px 20px; border-radius: 8px; border: 3px solid #000; font-weight: 700; display: none; z-index: 100; text-align: center;}
+    .loading-spinner { display: inline-block; width: 20px; height: 20px; border: 3px solid rgba(0,0,0,0.3); border-radius: 50%; border-top-color: #000; animation: spin 1s ease-in-out infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+  </style>
+</head>
+<body>
+
+  <div class="header">
+    <h1>KUIS ARKA</h1>
+  </div>
+
+  <div class="container">
+    
+    <!-- HALAMAN SETUP -->
+    <div id="setupScreen">
+      
+      <!-- Info Bank Soal & AI -->
+      <div class="card" style="background-color: #e0f2fe;">
+        <div class="card-header"><i class="fas fa-robot text-blue-500"></i> AI Soal Generator</div>
+        <p style="font-size: 0.85rem; margin-bottom: 1rem;">Tempelkan link file PDF dari GitHub Bapak di bawah ini. AI akan membaca foto halaman tersebut dan membuatkan soal bahasa Arab secara otomatis!</p>
+        
+        <div class="form-group">
+          <!-- Default contoh link, nanti Bapak ganti dengan link asli -->
+          <input type="text" id="pdfLinkInput" class="form-input" placeholder="https://raw.githubusercontent.com/.../Buku.pdf" value="https://raw.githubusercontent.com/username/repo/main/Bahasa_Arab_BAB_1.pdf">
+        </div>
+        
+        <button id="btnGenerateAI" class="btn btn-magic" onclick="buatSoalDariAI()">
+          <i class="fas fa-magic"></i> BACA PDF & BUAT SOAL
+        </button>
+        <p style="text-align: center; font-size: 0.8rem; margin-top: 10px; font-weight: 600;">
+          Total soal di memori: <span id="jmlBankSoal" style="color: #2563eb; font-size: 1rem;">0</span>
+        </p>
+      </div>
+
+      <!-- Pengaturan Bermain -->
+      <div class="card">
+        <div class="card-header"><i class="fas fa-gamepad text-green-500"></i> Pengaturan Bermain</div>
+        
+        <div class="form-group">
+          <span class="form-label">Mode Permainan</span>
+          <div class="radio-grid" style="grid-template-columns: 1fr 1fr;">
+            <div class="radio-card"><input type="radio" id="m_latihan" name="mode" value="latihan" checked><label for="m_latihan"><i class="fas fa-coffee" style="font-size: 1.5rem; color:#b45309"></i> Latihan</label></div>
+            <div class="radio-card"><input type="radio" id="m_kuis" name="mode" value="kuis"><label for="m_kuis"><i class="fas fa-stopwatch" style="font-size: 1.5rem; color:#ef4444"></i> Kuis (Waktu)</label></div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <span class="form-label">Jumlah Soal</span>
+          <div class="radio-grid">
+            <div class="radio-card"><input type="radio" id="j_5" name="jumlah" value="5" checked onchange="toggleBebas()"><label for="j_5">5</label></div>
+            <div class="radio-card"><input type="radio" id="j_10" name="jumlah" value="10" onchange="toggleBebas()"><label for="j_10">10</label></div>
+            <div class="radio-card"><input type="radio" id="j_bebas" name="jumlah" value="bebas" onchange="toggleBebas()"><label for="j_bebas">Bebas</label></div>
+          </div>
+          <!-- Kolom input untuk jumlah bebas -->
+          <input type="number" id="inputBebas" class="form-input hidden mt-2" placeholder="Ketik jumlah soal..." style="margin-top: 0.8rem;" min="1">
+        </div>
+        
+        <button class="btn btn-primary" onclick="mulaiMain()" style="margin-top: 1rem; padding: 1rem; font-size: 1.2rem;">
+          <i class="fas fa-play"></i> MULAI SEKARANG
+        </button>
+      </div>
+    </div>
+
+    <!-- HALAMAN BERMAIN -->
+    <div id="playScreen">
+      <div class="hud-bar">
+        <div class="hud-info">
+          <span style="font-size: 0.7rem; color: #94a3b8; font-weight: 700; text-transform: uppercase;">Progres</span>
+          <span style="font-size: 1.2rem; font-weight: 700;"><span id="hudNomor">1</span>/<span id="hudTotal">10</span></span>
+        </div>
+        <div id="timerContainer" class="timer-box">--:--</div>
+      </div>
+      
+      <div class="q-card">
+        <div id="teksSoal" class="q-text">Pertanyaan akan muncul di sini...</div>
+        <div id="areaOpsi"></div>
+        <div id="kotakUmpanBalik" class="feedback-box"></div>
+      </div>
+      
+      <button id="btnLanjut" class="btn btn-success hidden" onclick="soalSelanjutnya()">LANJUT <i class="fas fa-arrow-right"></i></button>
+    </div>
+
+    <!-- HALAMAN HASIL -->
+    <div id="resultScreen">
+      <div class="card" style="text-align: center; padding: 3rem 1.5rem;">
+        <i class="fas fa-trophy" style="font-size: 5rem; color: #fde047; text-shadow: 4px 4px 0 #000; margin-bottom: 1rem;"></i>
+        <h2 style="font-family: 'Press Start 2P', cursive; margin-bottom: 1rem;">SELESAI!</h2>
+        
+        <div style="background: #f8fafc; border: 4px solid #000; border-radius: 15px; padding: 2rem; margin-bottom: 2rem; box-shadow: 4px 4px 0 #000;">
+          <span style="font-weight: 700; color: #64748b; text-transform: uppercase;">Skor Kamu</span>
+          <div id="skorAkhir" style="font-size: 4rem; font-weight: 900; color: #3b82f6;">100</div>
+          <p style="font-weight: 700; margin-top: 10px;">Benar <span id="benarAkhir" style="color: #16a34a;">0</span> dari <span id="totalAkhir">0</span></p>
+        </div>
+        
+        <button class="btn btn-primary" onclick="kembaliKeMenu()">
+          <i class="fas fa-home"></i> KEMBALI KE MENU
+        </button>
+      </div>
+    </div>
+
+  </div>
+
+  <div id="toast"></div>
+
+  <script>
+    // =========================================================================
+    // ⚠️ GANTI STRING DI BAWAH INI DENGAN URL WEB APP GOOGLE SCRIPT BAPAK
+    // =========================================================================
+    const GAS_URL = "https://script.google.com/macros/s/AKfycbySVN_REzsi_R8p4Pjgptvm-bSCfw6dx45-6f5D3Q6lk7v52wRfuYQ-Qa8R-SaNAoRi/exec";
+    
+    // --- DATABASE LOKAL ---
+    let bankSoal = JSON.parse(localStorage.getItem('arkaBankSoalArab')) || [];
+    let sesiSoal = [];
+    let indexSoal = 0;
+    let skor = 0;
+    let waktuSisa = 0;
+    let timer = null;
+    let isLatihan = true;
+
+    // --- INISIALISASI ---
+    window.onload = () => { updateUIBankSoal(); };
+
+    function showToast(msg) {
+      const t = document.getElementById('toast');
+      t.innerText = msg; t.style.display = 'block';
+      setTimeout(() => { t.style.display = 'none'; }, 4000);
+    }
+
+    function toggleBebas() {
+      const bebasInput = document.getElementById('inputBebas');
+      if(document.getElementById('j_bebas').checked) {
+        bebasInput.classList.remove('hidden'); bebasInput.focus();
+      } else {
+        bebasInput.classList.add('hidden');
+      }
+    }
+
+    function updateUIBankSoal() {
+      document.getElementById('jmlBankSoal').innerText = bankSoal.length;
+    }
+
+    // --- FITUR MATA AI (KIRIM LINK PDF KE GAS -> GEMINI) ---
+    async function buatSoalDariAI() {
+      const linkPdf = document.getElementById('pdfLinkInput').value.trim();
+      if(!linkPdf) return showToast("Masukkan link PDF GitHub terlebih dahulu!");
+
+      if (GAS_URL.includes("MASUKKAN_URL")) {
+         return showToast("⚠️ Anda belum memasukkan URL Google Apps Script ke dalam kode HTML!");
+      }
+
+      const btn = document.getElementById('btnGenerateAI');
+      const oriText = btn.innerHTML;
+      btn.innerHTML = '<div class="loading-spinner"></div> AI Sedang Membaca Gambar...';
+      btn.disabled = true;
+
+      try {
+        // Melakukan Fetch (Kirim link ke Google Apps Script Bapak)
+        const response = await fetch(GAS_URL, {
+          method: 'POST',
+          body: JSON.stringify({ pdfUrl: linkPdf })
+        });
+        
+        const soalBaruJSON = await response.json();
+        
+        if(soalBaruJSON.error) {
+           throw new Error(soalBaruJSON.error);
+        }
+        
+        // Simpan soal dari AI ke memori browser
+        bankSoal = [...bankSoal, ...soalBaruJSON];
+        localStorage.setItem('arkaBankSoalArab', JSON.stringify(bankSoal));
+        
+        updateUIBankSoal();
+        showToast("🎉 Sukses! AI telah membaca gambar dan membuat soal.");
+
+      } catch (e) {
+        alert("Gagal menghubungi AI atau terjadi error: \n" + e.message);
+      } finally {
+        btn.innerHTML = oriText;
+        btn.disabled = false;
+      }
+    }
+
+    // --- LOGIKA PERMAINAN ---
+    function mulaiMain() {
+      if(bankSoal.length === 0) {
+        return showToast("Bank soal kosong! Generate AI dari PDF terlebih dahulu.");
+      }
+
+      // Ambil jumlah soal yang diminta user
+      let jmlMinta = 5;
+      if(document.getElementById('j_bebas').checked) {
+        jmlMinta = parseInt(document.getElementById('inputBebas').value) || 5;
+      } else {
+        jmlMinta = parseInt(document.querySelector('input[name="jumlah"]:checked').value);
+      }
+
+      // Pastikan tidak melebihi stok di bank soal
+      if(jmlMinta > bankSoal.length) {
+        showToast(`Hanya ada ${bankSoal.length} soal di bank data. Menampilkan semuanya.`);
+        jmlMinta = bankSoal.length;
+      }
+
+      isLatihan = document.getElementById('m_latihan').checked;
+      
+      // Acak urutan soal
+      sesiSoal = [...bankSoal].sort(() => 0.5 - Math.random()).slice(0, jmlMinta);
+      
+      indexSoal = 0; 
+      skor = 0;
+      
+      document.getElementById('setupScreen').style.display = 'none';
+      document.getElementById('playScreen').style.display = 'flex';
+      document.getElementById('hudTotal').innerText = sesiSoal.length;
+      
+      const timerBox = document.getElementById('timerContainer');
+      if(isLatihan) { 
+        timerBox.style.display = 'none'; 
+      } else { 
+        timerBox.style.display = 'block'; 
+        waktuSisa = sesiSoal.length * 20; // 20 detik per soal
+        mulaiWaktu(); 
+      }
+
+      renderSoal();
+    }
+
+    function mulaiWaktu() {
+      clearInterval(timer);
+      updateWaktuUI();
+      timer = setInterval(() => {
+        waktuSisa--; updateWaktuUI();
+        if(waktuSisa <= 0) { clearInterval(timer); akhiriPermainan(); }
+      }, 1000);
+    }
+
+    function updateWaktuUI() {
+      const m = Math.floor(waktuSisa / 60).toString().padStart(2, '0');
+      const s = (waktuSisa % 60).toString().padStart(2, '0');
+      document.getElementById('timerContainer').innerText = `${m}:${s}`;
+    }
+
+    function renderSoal() {
+      const s = sesiSoal[indexSoal];
+      document.getElementById('hudNomor').innerText = indexSoal + 1;
+      document.getElementById('teksSoal').innerText = s.soal;
+      
+      const area = document.getElementById('areaOpsi');
+      area.innerHTML = '';
+      
+      const fbox = document.getElementById('kotakUmpanBalik');
+      fbox.style.display = 'none';
+      document.getElementById('btnLanjut').classList.add('hidden');
+
+      // Acak posisi opsi jawaban (A, B, C, D)
+      const opsiAcak = [...s.opsi].sort(() => 0.5 - Math.random());
+      
+      opsiAcak.forEach((opt, i) => {
+        const btn = document.createElement('button');
+        btn.className = 'opt-btn';
+        btn.innerText = `${String.fromCharCode(65+i)}. ${opt}`;
+        btn.onclick = () => cekJawaban(opt, btn);
+        area.appendChild(btn);
+      });
+    }
+
+    function cekJawaban(jawabanUser, el) {
+      const s = sesiSoal[indexSoal];
+      const benar = (jawabanUser === s.jawaban);
+      
+      const semuaBtn = document.querySelectorAll('.opt-btn');
+      semuaBtn.forEach(b => b.disabled = true); // Kunci semua tombol
+
+      if(isLatihan) {
+        semuaBtn.forEach(b => {
+          if(b.innerText.substring(3) === s.jawaban) b.classList.add('correct');
+        });
+        if(!benar) el.classList.add('wrong');
+
+        const fbox = document.getElementById('kotakUmpanBalik');
+        fbox.style.display = 'block';
+        if(benar) {
+          skor++;
+          fbox.style.backgroundColor = '#dcfce7'; fbox.style.borderColor = '#16a34a'; fbox.style.color = '#166534';
+          fbox.innerHTML = '<i class="fas fa-check-circle"></i> MUMTAZ! TEPAT SEKALI!';
+        } else {
+          fbox.style.backgroundColor = '#fee2e2'; fbox.style.borderColor = '#dc2626'; fbox.style.color = '#991b1b';
+          fbox.innerHTML = `SALAH. Jawaban yang benar: <b>${s.jawaban}</b>`;
+        }
+        document.getElementById('btnLanjut').classList.remove('hidden');
+      } else {
+        if(benar) skor++;
+        soalSelanjutnya();
+      }
+    }
+
+    function soalSelanjutnya() {
+      indexSoal++;
+      if(indexSoal < sesiSoal.length) { renderSoal(); } 
+      else { akhiriPermainan(); }
+    }
+
+    function akhiriPermainan() {
+      clearInterval(timer);
+      document.getElementById('playScreen').style.display = 'none';
+      document.getElementById('resultScreen').style.display = 'flex';
+      
+      const persen = Math.round((skor / sesiSoal.length) * 100);
+      document.getElementById('skorAkhir').innerText = persen;
+      document.getElementById('benarAkhir').innerText = skor;
+      document.getElementById('totalAkhir').innerText = sesiSoal.length;
+    }
+
+    function kembaliKeMenu() {
+      document.getElementById('resultScreen').style.display = 'none';
+      document.getElementById('setupScreen').style.display = 'block';
+    }
+  </script>
+</body>
+</html>
