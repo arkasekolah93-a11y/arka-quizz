@@ -253,7 +253,7 @@
         jumlahMinta = parseInt(jumlahMinta);
       }
 
-      // 1. SARING SOAL (ANTI TYPO)
+      // 1. SARING SOAL (ANTI TYPO & SUPER PINTAR)
       soalTersaring = BANK_SOAL_GLOBAL.filter(s => {
         let k1 = bersihkanTeks(s.kelas);
         let k2 = bersihkanTeks(targetKelas);
@@ -263,9 +263,24 @@
         let m2 = bersihkanTeks(targetMapel);
         let cocokMapel = targetMapel ? (m1 === m2) : true;
         
-        let b1 = bersihkanTeks(s.bab);
-        let b2 = bersihkanTeks(targetBab);
-        let cocokBab = targetBab ? (b1 === b2) : true;
+        // --- KODE BARU: Pencocokan Bab Ekstrak Angka ---
+        // Mencari angka di dalam teks (Misal: "Bab 1-2" jadi ['1', '2'])
+        let angkaBabSoal = s.bab.toString().match(/\d+/g) || [];
+        let angkaBabTarget = targetBab.toString().match(/\d+/g) || [];
+        
+        let cocokBab = true;
+        if (targetBab) {
+            if (angkaBabSoal.length > 0 && angkaBabTarget.length > 0) {
+                // Jika dari aplikasi minta "Bab 1-2", dan di excel ada "1", maka cocok!
+                cocokBab = angkaBabSoal.some(angka => angkaBabTarget.includes(angka));
+            } else {
+                // Jika bab tidak pakai angka sama sekali (Misal: "Ujian Akhir")
+                let b1 = bersihkanTeks(s.bab).replace(/bab/g, '');
+                let b2 = bersihkanTeks(targetBab).replace(/bab/g, '');
+                cocokBab = (b1 === b2 || b2.includes(b1) || b1.includes(b2));
+            }
+        }
+        // --- AKHIR KODE BARU ---
         
         let cocokTipe = (tipe === 'semua') ? true : (s.tipe === tipe);
         
