@@ -5,453 +5,420 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
   <title>Kuis Arka Belajar</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Press+Start+2P&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600&family=Press+Start+2P&display=swap" rel="stylesheet">
   
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body { 
       font-family: 'Fredoka', sans-serif; 
-      background-color: #7dd3fc; 
-      background-image: linear-gradient(45deg, rgba(255,255,255,0.2) 25%, transparent 25%, transparent 75%, rgba(255,255,255,0.2) 75%, rgba(255,255,255,0.2)), 
-                        linear-gradient(45deg, rgba(255,255,255,0.2) 25%, transparent 25%, transparent 75%, rgba(255,255,255,0.2) 75%, rgba(255,255,255,0.2)); 
-      background-size: 60px 60px; 
-      color: #1e293b; 
+      background-color: #fde047; /* Kuning ceria */
+      background-image: radial-gradient(#000 1px, transparent 1px);
+      background-size: 20px 20px;
+      color: #000; 
       min-height: 100vh; 
-      overflow-x: hidden; 
-      display: flex; 
-      flex-direction: column; 
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 1rem;
     }
     
-    /* Header Style */
-    .header { background: #4ade80; padding: 1rem; display: flex; justify-content: center; align-items: center; border-bottom: 8px solid #713f12; border-top: 4px solid #bbf7d0; position: sticky; top: 0; z-index: 50; }
-    .header h1 { font-family: 'Press Start 2P', cursive; font-size: 1.2rem; color: white; text-shadow: 2px 2px 0 #000, -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000; letter-spacing: 1px; text-align: center; cursor: pointer;}
+    .card {
+      background: #fff;
+      border: 5px solid #000;
+      border-radius: 16px;
+      box-shadow: 8px 8px 0 #000;
+      width: 100%;
+      max-width: 600px;
+      padding: 2rem;
+      margin-top: 1rem;
+      position: relative;
+    }
+
+    h1, h2 { font-family: 'Press Start 2P', cursive; text-align: center; line-height: 1.5; }
+    h1 { font-size: 1.2rem; color: #ef4444; text-shadow: 2px 2px 0 #000; margin-bottom: 1.5rem; }
+    h2 { font-size: 1rem; margin-bottom: 1rem; }
+
+    label { font-weight: 600; display: block; margin-top: 1rem; margin-bottom: 0.5rem; font-size: 1.1rem; }
+    select, input[type="number"], input[type="text"] {
+      width: 100%;
+      padding: 12px;
+      border: 3px solid #000;
+      border-radius: 8px;
+      font-family: 'Fredoka', sans-serif;
+      font-size: 1rem;
+      font-weight: 600;
+      background: #e2e8f0;
+      box-shadow: 4px 4px 0 #000;
+      outline: none;
+    }
+
+    .btn {
+      width: 100%;
+      padding: 15px;
+      margin-top: 2rem;
+      border: 4px solid #000;
+      border-radius: 12px;
+      font-family: 'Press Start 2P', cursive;
+      font-size: 0.9rem;
+      cursor: pointer;
+      box-shadow: 6px 6px 0 #000;
+      transition: transform 0.1s, box-shadow 0.1s;
+    }
+    .btn:active { transform: translate(6px, 6px); box-shadow: 0 0 0 #000; }
+    .btn-primary { background: #4ade80; color: #000; }
+    .btn-danger { background: #ef4444; color: #fff; margin-top: 1rem;}
+    .btn-option {
+      background: #93c5fd; font-family: 'Fredoka', sans-serif; font-size: 1.2rem; font-weight: 600;
+      margin-top: 10px; text-align: left;
+    }
+
+    .info-banner {
+      background: #3b82f6; color: white; padding: 10px; border: 3px solid #000; 
+      border-radius: 8px; font-weight: bold; text-align: center; margin-bottom: 1.5rem;
+      box-shadow: 4px 4px 0 #000;
+    }
     
-    .container { padding: 1.5rem; width: 100%; max-width: 800px; margin: 0 auto; flex: 1; display: flex; flex-direction: column; }
-    
-    /* Neo-Brutalism Cards */
-    .card { background: #fff; border-radius: 15px; padding: 1.5rem; border: 4px solid #000; box-shadow: 6px 6px 0 rgba(0,0,0,0.8); margin-bottom: 1.5rem; transition: all 0.1s;}
-    .card-header { font-family: 'Press Start 2P', cursive; font-size: 0.8rem; margin-bottom: 1.2rem; padding-bottom: 0.8rem; border-bottom: 3px dashed #cbd5e1; display: flex; align-items: center; gap: 10px; }
-    
-    /* Form Inputs */
-    .form-group { margin-bottom: 1.2rem; }
-    .form-label { display: block; font-weight: 700; margin-bottom: 0.5rem; font-size: 0.9rem; text-transform: uppercase; }
-    .form-select, .form-input { width: 100%; padding: 0.8rem; border-radius: 8px; border: 3px solid #000; font-family: 'Fredoka', sans-serif; font-size: 1rem; font-weight: 600; outline: none; background: #f8fafc; cursor: pointer; box-shadow: 3px 3px 0 #000; transition: all 0.1s;}
-    .form-select:focus, .form-input:focus { background: #fff; transform: translate(2px, 2px); box-shadow: 1px 1px 0 #000; }
-    
-    /* Buttons */
-    .btn { display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem; padding: 0.8rem 1.2rem; border-radius: 10px; font-weight: 700; font-size: 1rem; cursor: pointer; border: 4px solid #000; transition: all 0.1s; text-transform: uppercase; width: 100%; font-family: 'Fredoka', sans-serif; }
-    .btn:active:not(:disabled) { transform: translate(4px, 4px); box-shadow: 0 0 0 #000; }
-    .btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; box-shadow: 4px 4px 0 #000; }
-    
-    .btn-primary { background: #fde047; color: #000; box-shadow: 4px 4px 0 #000; }
-    .btn-success { background: #4ade80; color: #000; box-shadow: 4px 4px 0 #000; }
-    
-    /* Radio/Grid Cards */
-    .radio-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); gap: 0.8rem; }
-    .radio-card label { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 0.8rem; border: 3px solid #000; border-radius: 10px; cursor: pointer; font-weight: 700; background: #f8fafc; box-shadow: 3px 3px 0 #000; transition: all 0.1s; text-align: center; height: 100%; }
-    .radio-card input[type="radio"] { display: none; }
-    .radio-card input[type="radio"]:checked + label { background: #93c5fd; transform: translate(3px, 3px); box-shadow: 0 0 0 #000; }
-    
-    /* Screens */
-    #playScreen, #resultScreen { display: none; flex-direction: column; gap: 1rem; height: 100%; }
-    
-    /* HUD & Timer */
-    .hud-bar { background: #1e293b; color: white; border: 4px solid #000; border-radius: 12px; padding: 1rem; display: flex; justify-content: space-between; align-items: center; box-shadow: 4px 4px 0 #000; }
-    .hud-info span { display: block; }
-    .timer-box { background: #ef4444; padding: 0.5rem 1rem; border-radius: 8px; border: 2px solid #000; font-family: 'Press Start 2P', cursive; font-size: 1rem; }
-    
-    /* Question Card */
-    .q-card { flex: 1; background: #fff; border: 4px solid #000; border-radius: 15px; padding: 1.5rem; box-shadow: 6px 6px 0 #000; display: flex; flex-direction: column; }
-    /* Penyesuaian font agar huruf Arab terlihat jelas dan besar */
-    .q-text { font-size: 1.8rem; font-weight: 700; text-align: center; margin-bottom: 2rem; line-height: 1.6; flex: 1; display: flex; align-items: center; justify-content: center; direction: rtl; }
-    
-    .opt-btn { width: 100%; text-align: left; padding: 1rem; border: 3px solid #000; border-radius: 10px; background: #f8fafc; font-size: 1.3rem; font-weight: 700; cursor: pointer; transition: all 0.1s; margin-bottom: 0.8rem; box-shadow: 4px 4px 0 #000; direction: rtl; display: flex; gap: 10px; align-items: center;}
-    .opt-btn:active:not(:disabled) { transform: translate(3px, 3px); box-shadow: 1px 1px 0 #000; }
-    .opt-btn.correct { background: #4ade80; color: #000; }
-    .opt-btn.wrong { background: #fca5a5; color: #000; }
-    
-    .feedback-box { margin-top: 1rem; padding: 1rem; border: 3px solid #000; border-radius: 10px; font-weight: 700; text-align: center; display: none; font-size: 1.2rem;}
-    
-    /* Utilities */
     .hidden { display: none !important; }
-    #toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: #1e293b; color: white; padding: 10px 20px; border-radius: 8px; border: 3px solid #000; font-weight: 700; display: none; z-index: 100; text-align: center; box-shadow: 4px 4px 0 #000;}
+    .arabic-text { direction: rtl; font-size: 1.8rem; line-height: 2.5; }
+    
+    .hud { display: flex; justify-content: space-between; font-family: 'Press Start 2P', cursive; font-size: 0.7rem; margin-bottom: 1rem; background: #000; color: #fff; padding: 10px; border-radius: 8px; }
+    .timer.danger { color: #ef4444; animation: blink 1s infinite; }
+    @keyframes blink { 50% { opacity: 0; } }
+
+    #loadingScreen i { font-size: 3rem; color: #3b82f6; margin-bottom: 1rem; }
+    
+    .media-box {
+        margin-bottom: 1.5rem;
+        text-align: center;
+    }
+    .media-box img, .media-box iframe {
+        max-width: 100%;
+        max-height: 250px;
+        border-radius: 8px;
+        border: 4px solid #000;
+        box-shadow: 4px 4px 0 #000;
+    }
   </style>
 </head>
 <body>
 
-  <div class="header">
-    <h1 onclick="kembaliKeMenu()">KUIS ARKA</h1>
+  <!-- Layar Loading Data -->
+  <div id="loadingScreen" class="card" style="text-align: center; padding: 4rem 2rem;">
+    <i class="fas fa-spinner fa-spin"></i>
+    <h2>MEMUAT BANK SOAL...</h2>
+    <p>Menghubungkan ke Google Sheets</p>
   </div>
 
-  <div class="container">
+  <!-- Layar Pengaturan Kuis -->
+  <div id="setupScreen" class="card hidden">
+    <h1>ARENA KUIS</h1>
     
-    <!-- HALAMAN SETUP / PENGATURAN -->
-    <div id="setupScreen">
-      
-      <div id="cardPilihMateri" class="card">
-        <div class="card-header"><i class="fas fa-book text-blue-500"></i> Pilih Materi</div>
-        
-        <div class="form-group">
-          <span class="form-label">Mata Pelajaran</span>
-          <select id="selectMapel" class="form-select" onchange="updateDropdownBab()">
-            <option value="">-- Pilih Mata Pelajaran --</option>
-            <!-- Diisi oleh JavaScript -->
-          </select>
-        </div>
+    <div id="bannerInfo" class="info-banner hidden"></div>
 
-        <div class="form-group">
-          <span class="form-label">Bab / Topik</span>
-          <select id="selectBab" class="form-select">
-            <option value="">-- Pilih Bab --</option>
-            <!-- Diisi oleh JavaScript -->
-          </select>
-        </div>
-      </div>
+    <label>Mode Bermain:</label>
+    <select id="setMode">
+      <option value="latihan">🎓 Latihan (Tanpa Waktu)</option>
+      <option value="kuis">⏱️ Kuis Cepat (Ada Waktu)</option>
+    </select>
 
-      <div class="card">
-        <div class="card-header"><i class="fas fa-gamepad text-green-500"></i> Pengaturan Bermain</div>
-        
-        <div class="form-group">
-          <span class="form-label">Mode Permainan</span>
-          <div class="radio-grid" style="grid-template-columns: 1fr 1fr;">
-            <div class="radio-card"><input type="radio" id="m_latihan" name="mode" value="latihan" checked><label for="m_latihan"><i class="fas fa-coffee" style="font-size: 1.5rem; color:#b45309"></i> Latihan</label></div>
-            <div class="radio-card"><input type="radio" id="m_kuis" name="mode" value="kuis"><label for="m_kuis"><i class="fas fa-stopwatch" style="font-size: 1.5rem; color:#ef4444"></i> Kuis (Waktu)</label></div>
-          </div>
-        </div>
+    <label>Jenis Soal:</label>
+    <select id="setTipe">
+      <option value="semua">Campuran (Ganda & Uraian)</option>
+      <option value="ganda">Pilihan Ganda Saja</option>
+      <option value="uraian">Uraian / Isian Saja</option>
+    </select>
 
-        <div class="form-group">
-          <span class="form-label">Jumlah Soal</span>
-          <div class="radio-grid">
-            <div class="radio-card"><input type="radio" id="j_5" name="jumlah" value="5" checked onchange="toggleBebas()"><label for="j_5">5</label></div>
-            <div class="radio-card"><input type="radio" id="j_10" name="jumlah" value="10" onchange="toggleBebas()"><label for="j_10">10</label></div>
-            <div class="radio-card"><input type="radio" id="j_bebas" name="jumlah" value="bebas" onchange="toggleBebas()"><label for="j_bebas">Bebas</label></div>
-          </div>
-          <input type="number" id="inputBebas" class="form-input hidden" placeholder="Ketik jumlah soal..." style="margin-top: 0.8rem;" min="1">
-        </div>
-        
-        <button class="btn btn-primary" onclick="mulaiMain()" style="margin-top: 1rem; padding: 1rem; font-size: 1.2rem;">
-          <i class="fas fa-play"></i> MULAI SEKARANG
-        </button>
-      </div>
-    </div>
+    <label>Jumlah Soal:</label>
+    <select id="setJumlah" onchange="toggleCustomJumlah()">
+      <option value="5">5 Soal</option>
+      <option value="10">10 Soal</option>
+      <option value="15">15 Soal</option>
+      <option value="bebas">Bebas (Ketik Sendiri)</option>
+    </select>
+    <input type="number" id="customJumlah" class="hidden" placeholder="Masukkan angka..." style="margin-top:10px;" min="1">
 
-    <!-- HALAMAN BERMAIN -->
-    <div id="playScreen">
-      <div class="hud-bar">
-        <div class="hud-info">
-          <span style="font-size: 0.7rem; color: #94a3b8; font-weight: 700; text-transform: uppercase;">Progres</span>
-          <span style="font-size: 1.2rem; font-weight: 700;"><span id="hudNomor">1</span>/<span id="hudTotal">10</span></span>
-        </div>
-        <div id="timerContainer" class="timer-box">--:--</div>
-      </div>
-      
-      <div class="q-card">
-        <div id="teksSoal" class="q-text">Pertanyaan...</div>
-        <div id="areaOpsi"></div>
-        <div id="kotakUmpanBalik" class="feedback-box"></div>
-      </div>
-      
-      <button id="btnLanjut" class="btn btn-success hidden" onclick="soalSelanjutnya()">LANJUT <i class="fas fa-arrow-right"></i></button>
-    </div>
-
-    <!-- HALAMAN HASIL -->
-    <div id="resultScreen">
-      <div class="card" style="text-align: center; padding: 3rem 1.5rem;">
-        <i class="fas fa-trophy" style="font-size: 5rem; color: #fde047; text-shadow: 4px 4px 0 #000; margin-bottom: 1rem;"></i>
-        <h2 style="font-family: 'Press Start 2P', cursive; margin-bottom: 1rem; line-height: 1.4;">SELESAI!</h2>
-        
-        <div style="background: #f8fafc; border: 4px solid #000; border-radius: 15px; padding: 2rem; margin-bottom: 2rem; box-shadow: 4px 4px 0 #000;">
-          <span style="font-weight: 700; color: #64748b; text-transform: uppercase;">Skor Kamu</span>
-          <div id="skorAkhir" style="font-size: 4rem; font-weight: 900; color: #3b82f6;">100</div>
-          <p style="font-weight: 700; margin-top: 10px; font-size: 1.2rem;">Benar <span id="benarAkhir" style="color: #16a34a;">0</span> dari <span id="totalAkhir">0</span></p>
-        </div>
-        
-        <button class="btn btn-primary" onclick="kembaliKeMenu()" style="padding: 1rem;">
-          <i class="fas fa-home"></i> MAIN LAGI
-        </button>
-      </div>
-    </div>
-
+    <button class="btn btn-primary" onclick="mulaiKuis()">MULAI MISI <i class="fas fa-rocket"></i></button>
   </div>
 
-  <div id="toast"></div>
+  <!-- Layar Utama Bermain -->
+  <div id="playScreen" class="card hidden">
+    <div class="hud">
+      <div>SOAL: <span id="soalKe">1</span>/<span id="soalTotal">10</span></div>
+      <div id="waktuBox" class="hidden">WAKTU: <span id="waktuSisa">0</span>s</div>
+    </div>
+    
+    <!-- Tempat memunculkan gambar/video sekarang di ATAS teks soal -->
+    <div id="tempatMedia" class="media-box hidden"></div>
+    
+    <h2 id="teksSoal" style="text-align: left; font-family: 'Fredoka'; font-size: 1.5rem; margin-bottom: 1.5rem;">Pertanyaan...</h2>
+    
+    <div id="tempatOpsi"></div>
+    
+    <div id="tempatUraian" class="hidden">
+      <input type="text" id="inputUraian" placeholder="Ketik jawabanmu di sini...">
+      <button class="btn btn-primary" onclick="cekUraian()" style="margin-top: 10px;">KUNCI JAWABAN <i class="fas fa-check"></i></button>
+    </div>
+
+    <div id="feedback" class="info-banner hidden" style="margin-top: 1rem;"></div>
+    <button id="btnLanjut" class="btn btn-primary hidden" onclick="soalSelanjutnya()">LANJUT <i class="fas fa-arrow-right"></i></button>
+  </div>
+
+  <!-- Layar Hasil -->
+  <div id="resultScreen" class="card hidden" style="text-align: center;">
+    <h1>MISI SELESAI!</h1>
+    <h2 style="font-size: 3rem; margin: 1.5rem 0;" id="skorAkhir">100</h2>
+    <p style="font-weight: bold; font-size: 1.2rem; margin-bottom: 2rem;">Benar: <span id="benarAkhir">0</span> | Salah: <span id="salahAkhir">0</span></p>
+    <button class="btn btn-primary" onclick="location.reload()">MAIN LAGI <i class="fas fa-redo"></i></button>
+  </div>
 
   <script>
-    // =========================================================================
-    // DATABASE BANK SOAL MANUAL (PASTE SOAL DARI AI KE SINI)
-    // =========================================================================
-    const BANK_SOAL = [
-      {
-        "mapel": "Bahasa Arab",
-        "bab": "Bab 1: Rukun Islam",
-        "soal": "مِنْ شُرُوْطِ الْإِسْلَامِ ... الشَّهَادَتَيْنِ",
-        "opsi": ["إِقْرَارُ", "إِنْكَارُ", "تَرْكُ", "نِسْيَانُ"],
-        "jawaban": "إِقْرَارُ"
-      },
-      {
-        "mapel": "Bahasa Arab",
-        "bab": "Bab 1: Rukun Islam",
-        "soal": "أَرْكَانُ الْإِسْلَامِ ...",
-        "opsi": ["ثَلَاثَةٌ", "أَرْبَعَةٌ", "خَمْسَةٌ", "سِتَّةٌ"],
-        "jawaban": "خَمْسَةٌ"
-      },
-      {
-        "mapel": "Bahasa Arab",
-        "bab": "Bab 1: Rukun Islam",
-        "soal": "وَالشَّهَادَةُ رُكْنٌ مِنْ أَرْكَانِ ...",
-        "opsi": ["الْإِيْمَانِ", "الْإِسْلَامِ", "الْإِحْسَانِ", "الصَّلَاةِ"],
-        "jawaban": "الْإِسْلَامِ"
-      },
-      {
-        "mapel": "Bahasa Arab",
-        "bab": "Bab 1: Rukun Islam",
-        "soal": "مَاذَا تَفْعَلُ بَعْدَ صَلَاةِ الصُّبْحِ؟ ... الْقُرْآنَ",
-        "opsi": ["أَقْرَأُ", "أَكْتُبُ", "أَنَامُ", "أَلْعَبُ"],
-        "jawaban": "أَقْرَأُ"
-      },
-      {
-        "mapel": "Matematika",
-        "bab": "Bab 1: Penjumlahan",
-        "soal": "Berapakah hasil dari 15 + 12?",
-        "opsi": ["25", "27", "28", "30"],
-        "jawaban": "27"
-      }
-      // Bapak bisa menambahkan kurung kurawal baru di bawah ini jika ada soal baru
-    ];
+    // 1. MASUKKAN LINK GOOGLE APPS SCRIPT KUIS BAPAK DI SINI:
+    const GAS_URL = "https://script.google.com/macros/s/AKfycbxOeIJAjNpZ4Qf0uYom7l0fvSNh25D4jHLMjG3-9-DZjmcBLcf_Ie1Ps__XkithIHP4/exec"; 
 
-    let sesiSoal = [];
+    let BANK_SOAL_GLOBAL = [];
+    let soalTersaring = [];
     let indexSoal = 0;
-    let skor = 0;
-    let waktuSisa = 0;
-    let timer = null;
-    let isLatihan = true;
+    let skorBenar = 0;
+    let skorSalah = 0;
+    let waktuTimer;
+    let sisaWaktu = 0;
 
-    window.onload = () => { 
-      initDropdowns(); 
-      cekParameterURL();
+    let targetKelas = "";
+    let targetMapel = "";
+    let targetBab = "";
+
+    // Membaca URL saat pertama dibuka
+    window.onload = async function() {
+      const urlParams = new URLSearchParams(window.location.search);
+      targetKelas = urlParams.get('kelas') || "";
+      targetMapel = urlParams.get('mapel') || "";
+      targetBab = urlParams.get('bab') || "";
+
+      await tarikDataDariSheets();
     };
 
-    // FUNGSI BARU: Membaca pesan dari Link URL
-    function cekParameterURL() {
-      const urlParams = new URLSearchParams(window.location.search);
-      const paramMapel = urlParams.get('mapel');
-      const paramBab = urlParams.get('bab');
-
-      if(paramMapel && paramBab) {
-        const selectMapel = document.getElementById('selectMapel');
-        const mapelOptions = Array.from(selectMapel.options);
-        // Cek nama mapel
-        const matchMapel = mapelOptions.find(opt => opt.value.toLowerCase() === paramMapel.toLowerCase());
+    async function tarikDataDariSheets() {
+      try {
+        const response = await fetch(GAS_URL);
+        const json = await response.json();
         
-        if(matchMapel) {
-          selectMapel.value = matchMapel.value;
-          updateDropdownBab();
-          
-          const selectBab = document.getElementById('selectBab');
-          const babOptions = Array.from(selectBab.options);
-          // Gunakan includes agar "Bab 1" bisa nyambung dengan "Bab 1: Rukun Islam"
-          const matchBab = babOptions.find(opt => opt.value.toLowerCase().includes(paramBab.toLowerCase()));
-          
-          if(matchBab) {
-            selectBab.value = matchBab.value;
-            
-            // Sembunyikan form pilih materi agar rapi
-            document.getElementById('cardPilihMateri').style.display = 'none';
-            
-            // Tambahkan banner info materi terpilih
-            const infoDiv = document.createElement('div');
-            infoDiv.style.cssText = "background: #bfdbfe; border: 4px solid #000; border-radius: 12px; padding: 1rem; margin-bottom: 1.5rem; text-align: center; box-shadow: 4px 4px 0 #000;";
-            infoDiv.innerHTML = `<i class="fas fa-check-circle" style="color: #2563eb; font-size: 1.5rem; margin-bottom: 5px;"></i><br><span style="font-size: 0.8rem; font-weight: 700; text-transform: uppercase; color: #475569;">Materi Terpilih:</span><br><span style="color:#1d4ed8; font-size:1.2rem; font-weight: 900;">${matchMapel.value}<br>${matchBab.value}</span>`;
-            
-            document.getElementById('setupScreen').insertBefore(infoDiv, document.getElementById('cardPilihMateri'));
-          }
+        if(json.status === "success") {
+          BANK_SOAL_GLOBAL = json.data;
+          siapkanMenu();
+        } else {
+          alert("Gagal membaca Sheets: " + json.message);
         }
+      } catch (e) {
+        alert("Gagal koneksi ke Google Sheets. Periksa link GAS.");
       }
     }
 
-    function showToast(msg) {
-      const t = document.getElementById('toast');
-      t.innerText = msg; t.style.display = 'block';
-      setTimeout(() => { t.style.display = 'none'; }, 3000);
+    function siapkanMenu() {
+      document.getElementById('loadingScreen').classList.add('hidden');
+      document.getElementById('setupScreen').classList.remove('hidden');
+
+      if(targetMapel && targetBab) {
+        const banner = document.getElementById('bannerInfo');
+        let infoTeks = `<i class="fas fa-book"></i> Materi Terpilih:<br>`;
+        if(targetKelas) infoTeks += `Kelas ${targetKelas} - `;
+        infoTeks += `${targetMapel.toUpperCase()} - ${targetBab.toUpperCase()}`;
+        
+        banner.innerHTML = infoTeks;
+        banner.classList.remove('hidden');
+      }
     }
 
-    function toggleBebas() {
-      const bebasInput = document.getElementById('inputBebas');
-      if(document.getElementById('j_bebas').checked) {
-        bebasInput.classList.remove('hidden'); bebasInput.focus();
+    function toggleCustomJumlah() {
+      const val = document.getElementById('setJumlah').value;
+      if(val === 'bebas') {
+        document.getElementById('customJumlah').classList.remove('hidden');
       } else {
-        bebasInput.classList.add('hidden');
+        document.getElementById('customJumlah').classList.add('hidden');
       }
     }
 
-    function initDropdowns() {
-      const selectMapel = document.getElementById('selectMapel');
-      const mapelSet = [...new Set(BANK_SOAL.map(item => item.mapel))];
+    function mulaiKuis() {
+      const mode = document.getElementById('setMode').value;
+      const tipe = document.getElementById('setTipe').value;
+      let jumlahMinta = document.getElementById('setJumlah').value;
       
-      selectMapel.innerHTML = '<option value="">-- Pilih Mata Pelajaran --</option>';
-      mapelSet.forEach(m => {
-        selectMapel.innerHTML += `<option value="${m}">${m}</option>`;
-      });
-    }
-
-    function updateDropdownBab() {
-      const mapelTerpilih = document.getElementById('selectMapel').value;
-      const selectBab = document.getElementById('selectBab');
-      selectBab.innerHTML = '<option value="">-- Pilih Bab --</option>';
-      
-      if(!mapelTerpilih) return;
-      
-      const babSet = [...new Set(BANK_SOAL.filter(i => i.mapel === mapelTerpilih).map(i => i.bab))];
-      babSet.forEach(b => {
-        selectBab.innerHTML += `<option value="${b}">${b}</option>`;
-      });
-    }
-
-    function mulaiMain() {
-      const mapel = document.getElementById('selectMapel').value;
-      const bab = document.getElementById('selectBab').value;
-      
-      if(!mapel || !bab) return showToast("Pilih Mata Pelajaran dan Bab terlebih dahulu!");
-
-      // Filter soal berdasarkan pilihan
-      let soalTersedia = BANK_SOAL.filter(i => i.mapel === mapel && i.bab === bab);
-      
-      if(soalTersedia.length === 0) return showToast("Belum ada soal untuk Bab ini.");
-
-      // Ambil jumlah soal yang diminta
-      let jmlMinta = 5;
-      if(document.getElementById('j_bebas').checked) {
-        jmlMinta = parseInt(document.getElementById('inputBebas').value) || 5;
+      if(jumlahMinta === 'bebas') {
+        jumlahMinta = parseInt(document.getElementById('customJumlah').value) || 5;
       } else {
-        jmlMinta = parseInt(document.querySelector('input[name="jumlah"]:checked').value);
+        jumlahMinta = parseInt(jumlahMinta);
       }
 
-      if(jmlMinta > soalTersedia.length) {
-        showToast(`Hanya tersedia ${soalTersedia.length} soal. Menampilkan semua.`);
-        jmlMinta = soalTersedia.length;
+      // 1. Saring soal berdasarkan Kelas, Mapel & Bab yang diklik anak
+      soalTersaring = BANK_SOAL_GLOBAL.filter(s => {
+        let cocokKelas = targetKelas ? (s.kelas.toString() === targetKelas.toString()) : true;
+        let cocokMapel = targetMapel ? (s.mapel.toLowerCase() === targetMapel.toLowerCase()) : true;
+        let cocokBab = targetBab ? (s.bab.toLowerCase() === targetBab.toLowerCase()) : true;
+        let cocokTipe = (tipe === 'semua') ? true : (s.tipe === tipe);
+        
+        return cocokKelas && cocokMapel && cocokBab && cocokTipe;
+      });
+
+      if(soalTersaring.length === 0) {
+        alert("Waduh! Soal untuk materi ini belum ada di Bank Soal (Google Sheets).");
+        return;
       }
 
-      isLatihan = document.getElementById('m_latihan').checked;
-      
-      // Acak urutan soal
-      sesiSoal = [...soalTersedia].sort(() => 0.5 - Math.random()).slice(0, jmlMinta);
-      
-      indexSoal = 0; skor = 0;
-      
-      document.getElementById('setupScreen').style.display = 'none';
-      document.getElementById('playScreen').style.display = 'flex';
-      document.getElementById('hudTotal').innerText = sesiSoal.length;
-      
-      const timerBox = document.getElementById('timerContainer');
-      if(isLatihan) { 
-        timerBox.style.display = 'none'; 
-      } else { 
-        timerBox.style.display = 'block'; 
-        waktuSisa = sesiSoal.length * 30; // 30 detik per soal
-        mulaiWaktu(); 
-      }
+      // 2. Acak Soal
+      soalTersaring.sort(() => Math.random() - 0.5);
 
-      renderSoal();
+      // 3. Batasi Jumlah Soal (Fallback)
+      if(jumlahMinta > soalTersaring.length) {
+        alert(`Jumlah soal yang diminta (${jumlahMinta}) terlalu banyak. Bank Soal hanya punya ${soalTersaring.length} soal. Kita pakai semuanya ya!`);
+        jumlahMinta = soalTersaring.length;
+      }
+      soalTersaring = soalTersaring.slice(0, jumlahMinta);
+
+      // 4. Setup Layar
+      document.getElementById('setupScreen').classList.add('hidden');
+      document.getElementById('playScreen').classList.remove('hidden');
+      document.getElementById('soalTotal').innerText = soalTersaring.length;
+      
+      if(mode === 'kuis') { document.getElementById('waktuBox').classList.remove('hidden'); }
+
+      tampilkanSoal();
     }
 
-    function mulaiWaktu() {
-      clearInterval(timer);
-      updateWaktuUI();
-      timer = setInterval(() => {
-        waktuSisa--; updateWaktuUI();
-        if(waktuSisa <= 0) { clearInterval(timer); akhiriPermainan(); }
+    function tampilkanSoal() {
+      clearInterval(waktuTimer);
+      const soalKini = soalTersaring[indexSoal];
+      const mode = document.getElementById('setMode').value;
+      
+      document.getElementById('soalKe').innerText = indexSoal + 1;
+      
+      // Urus Media (Gambar/Video) diletakkan di atas Teks Soal
+      const tempatMedia = document.getElementById('tempatMedia');
+      tempatMedia.innerHTML = "";
+      tempatMedia.classList.add('hidden');
+      if (soalKini.media) {
+          tempatMedia.classList.remove('hidden');
+          // Deteksi apakah link YouTube
+          if(soalKini.media.includes('youtube.com') || soalKini.media.includes('youtu.be')) {
+              let ytId = soalKini.media.split('v=')[1] || soalKini.media.split('youtu.be/')[1];
+              if(ytId) ytId = ytId.split('&')[0];
+              tempatMedia.innerHTML = `<iframe width="100%" height="200" src="https://www.youtube.com/embed/${ytId}" frameborder="0" allowfullscreen></iframe>`;
+          } else {
+              // Anggap sebagai gambar biasa
+              tempatMedia.innerHTML = `<img src="${soalKini.media}" alt="Media Pendukung Soal">`;
+          }
+      }
+
+      // Deteksi Teks Arab
+      let teksElement = document.getElementById('teksSoal');
+      teksElement.innerText = soalKini.soal;
+      if(/[\u0600-\u06FF]/.test(soalKini.soal)) { teksElement.classList.add('arabic-text'); } 
+      else { teksElement.classList.remove('arabic-text'); }
+
+      document.getElementById('feedback').classList.add('hidden');
+      document.getElementById('btnLanjut').classList.add('hidden');
+      
+      const tempatOpsi = document.getElementById('tempatOpsi');
+      const tempatUraian = document.getElementById('tempatUraian');
+      tempatOpsi.innerHTML = "";
+      document.getElementById('inputUraian').value = "";
+
+      if(soalKini.tipe === 'ganda') {
+        tempatUraian.classList.add('hidden');
+        tempatOpsi.classList.remove('hidden');
+        
+        let opsiAcak = [...soalKini.opsi].sort(() => Math.random() - 0.5);
+        opsiAcak.forEach(opsi => {
+          let btn = document.createElement('button');
+          btn.className = 'btn btn-option';
+          btn.innerText = opsi;
+          if(/[\u0600-\u06FF]/.test(opsi)) { btn.classList.add('arabic-text'); }
+          btn.onclick = () => cekJawaban(btn, opsi, soalKini.jawaban);
+          tempatOpsi.appendChild(btn);
+        });
+      } else {
+        tempatOpsi.classList.add('hidden');
+        tempatUraian.classList.remove('hidden');
+      }
+
+      if(mode === 'kuis') { jalankanWaktu(30); } // 30 detik per soal
+    }
+
+    function jalankanWaktu(detik) {
+      sisaWaktu = detik;
+      const display = document.getElementById('waktuSisa');
+      const box = document.getElementById('waktuBox');
+      display.innerText = sisaWaktu;
+      box.classList.remove('danger');
+      
+      waktuTimer = setInterval(() => {
+        sisaWaktu--;
+        display.innerText = sisaWaktu;
+        if(sisaWaktu <= 5) { box.classList.add('danger'); }
+        if(sisaWaktu <= 0) {
+          clearInterval(waktuTimer);
+          prosesSalahWaktuHabis();
+        }
       }, 1000);
     }
 
-    function updateWaktuUI() {
-      const m = Math.floor(waktuSisa / 60).toString().padStart(2, '0');
-      const s = (waktuSisa % 60).toString().padStart(2, '0');
-      document.getElementById('timerContainer').innerText = `${m}:${s}`;
+    function cekJawaban(btnKlik, opsiDipilih, kunci) {
+      clearInterval(waktuTimer);
+      // Kunci semua tombol agar tidak diklik dua kali
+      let semuaBtn = document.querySelectorAll('.btn-option');
+      semuaBtn.forEach(b => b.disabled = true);
+
+      let benar = opsiDipilih.toString().toLowerCase().trim() === kunci.toString().toLowerCase().trim();
+      tampilkanFeedback(benar, kunci);
+      if(benar) { btnKlik.style.background = "#4ade80"; skorBenar++; } 
+      else { btnKlik.style.background = "#ef4444"; btnKlik.style.color = "#fff"; skorSalah++; }
     }
 
-    function renderSoal() {
-      const s = sesiSoal[indexSoal];
-      document.getElementById('hudNomor').innerText = indexSoal + 1;
-      document.getElementById('teksSoal').innerText = s.soal;
+    function cekUraian() {
+      clearInterval(waktuTimer);
+      let isi = document.getElementById('inputUraian').value;
+      if(!isi) return;
+      document.getElementById('inputUraian').disabled = true;
+      let kunci = soalTersaring[indexSoal].jawaban;
       
-      const area = document.getElementById('areaOpsi');
-      area.innerHTML = '';
-      
-      const fbox = document.getElementById('kotakUmpanBalik');
-      fbox.style.display = 'none';
-      document.getElementById('btnLanjut').classList.add('hidden');
-
-      // Acak posisi opsi jawaban
-      const opsiAcak = [...s.opsi].sort(() => 0.5 - Math.random());
-      
-      // Deteksi jika tulisan adalah bahasa Arab (untuk styling huruf pilihan A,B,C,D)
-      const isArab = /[\u0600-\u06FF]/.test(s.opsi[0]);
-      
-      opsiAcak.forEach((opt, i) => {
-        const btn = document.createElement('button');
-        btn.className = 'opt-btn';
-        // Prefix A, B, C, D
-        const abjad = isArab ? ['أ', 'ب', 'ج', 'د'][i] : ['A', 'B', 'C', 'D'][i];
-        
-        btn.innerHTML = `<span>${abjad}.</span> <span style="flex:1; text-align:${isArab ? 'right' : 'left'}">${opt}</span>`;
-        btn.onclick = () => cekJawaban(opt, btn);
-        area.appendChild(btn);
-      });
+      let benar = isi.toString().toLowerCase().trim() === kunci.toString().toLowerCase().trim();
+      tampilkanFeedback(benar, kunci);
+      if(benar) { skorBenar++; } else { skorSalah++; }
     }
 
-    function cekJawaban(jawabanUser, el) {
-      const s = sesiSoal[indexSoal];
-      const benar = (jawabanUser === s.jawaban);
-      
-      const semuaBtn = document.querySelectorAll('.opt-btn');
-      semuaBtn.forEach(b => b.disabled = true); 
+    function prosesSalahWaktuHabis() {
+      let semuaBtn = document.querySelectorAll('.btn-option');
+      semuaBtn.forEach(b => b.disabled = true);
+      document.getElementById('inputUraian').disabled = true;
+      skorSalah++;
+      tampilkanFeedback(false, soalTersaring[indexSoal].jawaban, true);
+    }
 
-      if(isLatihan) {
-        semuaBtn.forEach(b => {
-          // Cek teks di dalam span kedua (isi opsi)
-          if(b.children[1].innerText === s.jawaban) b.classList.add('correct');
-        });
-        if(!benar) el.classList.add('wrong');
-
-        const fbox = document.getElementById('kotakUmpanBalik');
-        fbox.style.display = 'block';
-        if(benar) {
-          skor++;
-          fbox.style.backgroundColor = '#dcfce7'; fbox.style.borderColor = '#16a34a'; fbox.style.color = '#166534';
-          fbox.innerHTML = '<i class="fas fa-check-circle"></i> MUMTAZ! TEPAT SEKALI!';
-        } else {
-          fbox.style.backgroundColor = '#fee2e2'; fbox.style.borderColor = '#dc2626'; fbox.style.color = '#991b1b';
-          fbox.innerHTML = `SALAH. Jawaban yang benar:<br><br><span style="font-size:1.5rem; color:#000;">${s.jawaban}</span>`;
-        }
-        document.getElementById('btnLanjut').classList.remove('hidden');
+    function tampilkanFeedback(benar, kunci, waktuHabis = false) {
+      let fb = document.getElementById('feedback');
+      fb.classList.remove('hidden');
+      if(benar) {
+        fb.style.background = "#4ade80"; fb.style.color = "#000";
+        fb.innerHTML = "✅ TEPAT SEKALI!";
       } else {
-        if(benar) skor++;
-        soalSelanjutnya();
+        fb.style.background = "#ef4444"; fb.style.color = "#fff";
+        fb.innerHTML = (waktuHabis ? "⏱️ WAKTU HABIS!<br>" : "❌ KURANG TEPAT!<br>") + "Jawaban: " + kunci;
       }
+      document.getElementById('btnLanjut').classList.remove('hidden');
     }
 
     function soalSelanjutnya() {
       indexSoal++;
-      if(indexSoal < sesiSoal.length) { renderSoal(); } 
-      else { akhiriPermainan(); }
-    }
-
-    function akhiriPermainan() {
-      clearInterval(timer);
-      document.getElementById('playScreen').style.display = 'none';
-      document.getElementById('resultScreen').style.display = 'flex';
-      
-      const persen = Math.round((skor / sesiSoal.length) * 100);
-      document.getElementById('skorAkhir').innerText = persen;
-      document.getElementById('benarAkhir').innerText = skor;
-      document.getElementById('totalAkhir').innerText = sesiSoal.length;
-    }
-
-    function kembaliKeMenu() {
-      document.getElementById('resultScreen').style.display = 'none';
-      document.getElementById('playScreen').style.display = 'none';
-      document.getElementById('setupScreen').style.display = 'block';
-      clearInterval(timer);
+      if(indexSoal < soalTersaring.length) {
+        document.getElementById('inputUraian').disabled = false;
+        tampilkanSoal();
+      } else {
+        document.getElementById('playScreen').classList.add('hidden');
+        document.getElementById('resultScreen').classList.remove('hidden');
+        
+        let nilaiAkhir = Math.round((skorBenar / soalTersaring.length) * 100);
+        document.getElementById('skorAkhir').innerText = nilaiAkhir;
+        document.getElementById('benarAkhir').innerText = skorBenar;
+        document.getElementById('salahAkhir').innerText = skorSalah;
+      }
     }
   </script>
 </body>
