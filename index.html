@@ -3,98 +3,111 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
-  <title>Kuis Arka Belajar - AI Edition</title>
+  <title>Kuis Arka Belajar</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Press+Start+2P&display=swap" rel="stylesheet">
+  
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: 'Fredoka', sans-serif; background-color: #7dd3fc; background-image: linear-gradient(45deg, rgba(255,255,255,0.2) 25%, transparent 25%, transparent 75%, rgba(255,255,255,0.2) 75%, rgba(255,255,255,0.2)), linear-gradient(45deg, rgba(255,255,255,0.2) 25%, transparent 25%, transparent 75%, rgba(255,255,255,0.2) 75%, rgba(255,255,255,0.2)); background-size: 60px 60px; color: #1e293b; min-height: 100vh; overflow-x: hidden; display: flex; flex-direction: column; }
+    body { 
+      font-family: 'Fredoka', sans-serif; 
+      background-color: #7dd3fc; 
+      background-image: linear-gradient(45deg, rgba(255,255,255,0.2) 25%, transparent 25%, transparent 75%, rgba(255,255,255,0.2) 75%, rgba(255,255,255,0.2)), 
+                        linear-gradient(45deg, rgba(255,255,255,0.2) 25%, transparent 25%, transparent 75%, rgba(255,255,255,0.2) 75%, rgba(255,255,255,0.2)); 
+      background-size: 60px 60px; 
+      color: #1e293b; 
+      min-height: 100vh; 
+      overflow-x: hidden; 
+      display: flex; 
+      flex-direction: column; 
+    }
     
-    /* Header Style - Identik Arka Belajar */
+    /* Header Style */
     .header { background: #4ade80; padding: 1rem; display: flex; justify-content: center; align-items: center; border-bottom: 8px solid #713f12; border-top: 4px solid #bbf7d0; position: sticky; top: 0; z-index: 50; }
-    .header h1 { font-family: 'Press Start 2P', cursive; font-size: 1.2rem; color: white; text-shadow: 2px 2px 0 #000, -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000; letter-spacing: 1px; text-align: center; }
+    .header h1 { font-family: 'Press Start 2P', cursive; font-size: 1.2rem; color: white; text-shadow: 2px 2px 0 #000, -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000; letter-spacing: 1px; text-align: center; cursor: pointer;}
     
     .container { padding: 1.5rem; width: 100%; max-width: 800px; margin: 0 auto; flex: 1; display: flex; flex-direction: column; }
     
-    /* Neo-Brutalism Cards & Inputs */
-    .card { background: #fff; border-radius: 15px; padding: 1.5rem; border: 4px solid #000; box-shadow: 6px 6px 0 rgba(0,0,0,0.8); margin-bottom: 1.5rem; }
+    /* Neo-Brutalism Cards */
+    .card { background: #fff; border-radius: 15px; padding: 1.5rem; border: 4px solid #000; box-shadow: 6px 6px 0 rgba(0,0,0,0.8); margin-bottom: 1.5rem; transition: all 0.1s;}
     .card-header { font-family: 'Press Start 2P', cursive; font-size: 0.8rem; margin-bottom: 1.2rem; padding-bottom: 0.8rem; border-bottom: 3px dashed #cbd5e1; display: flex; align-items: center; gap: 10px; }
     
-    .form-group { margin-bottom: 1rem; }
+    /* Form Inputs */
+    .form-group { margin-bottom: 1.2rem; }
     .form-label { display: block; font-weight: 700; margin-bottom: 0.5rem; font-size: 0.9rem; text-transform: uppercase; }
-    .form-input { width: 100%; padding: 0.8rem; border-radius: 8px; border: 3px solid #000; font-family: 'Fredoka', sans-serif; font-size: 1rem; font-weight: 600; outline: none; transition: all 0.1s; }
-    .form-input:focus { box-shadow: 4px 4px 0 #3b82f6; transform: translate(-2px, -2px); }
+    .form-select, .form-input { width: 100%; padding: 0.8rem; border-radius: 8px; border: 3px solid #000; font-family: 'Fredoka', sans-serif; font-size: 1rem; font-weight: 600; outline: none; background: #f8fafc; cursor: pointer; box-shadow: 3px 3px 0 #000; transition: all 0.1s;}
+    .form-select:focus, .form-input:focus { background: #fff; transform: translate(2px, 2px); box-shadow: 1px 1px 0 #000; }
     
     /* Buttons */
     .btn { display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem; padding: 0.8rem 1.2rem; border-radius: 10px; font-weight: 700; font-size: 1rem; cursor: pointer; border: 4px solid #000; transition: all 0.1s; text-transform: uppercase; width: 100%; font-family: 'Fredoka', sans-serif; }
     .btn:active:not(:disabled) { transform: translate(4px, 4px); box-shadow: 0 0 0 #000; }
-    .btn:disabled { opacity: 0.6; cursor: not-allowed; }
+    .btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; box-shadow: 4px 4px 0 #000; }
     
     .btn-primary { background: #fde047; color: #000; box-shadow: 4px 4px 0 #000; }
     .btn-success { background: #4ade80; color: #000; box-shadow: 4px 4px 0 #000; }
-    .btn-magic { background: #c084fc; color: #fff; box-shadow: 4px 4px 0 #000; }
     
-    /* Radio Cards */
-    .radio-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(110px, 1fr)); gap: 0.8rem; }
+    /* Radio/Grid Cards */
+    .radio-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); gap: 0.8rem; }
     .radio-card label { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 0.8rem; border: 3px solid #000; border-radius: 10px; cursor: pointer; font-weight: 700; background: #f8fafc; box-shadow: 3px 3px 0 #000; transition: all 0.1s; text-align: center; height: 100%; }
     .radio-card input[type="radio"] { display: none; }
-    .radio-card input[type="radio"]:checked + label { background: #93c5fd; transform: translate(2px, 2px); box-shadow: 1px 1px 0 #000; }
+    .radio-card input[type="radio"]:checked + label { background: #93c5fd; transform: translate(3px, 3px); box-shadow: 0 0 0 #000; }
     
-    /* Main Play Area */
+    /* Screens */
     #playScreen, #resultScreen { display: none; flex-direction: column; gap: 1rem; height: 100%; }
     
+    /* HUD & Timer */
     .hud-bar { background: #1e293b; color: white; border: 4px solid #000; border-radius: 12px; padding: 1rem; display: flex; justify-content: space-between; align-items: center; box-shadow: 4px 4px 0 #000; }
     .hud-info span { display: block; }
     .timer-box { background: #ef4444; padding: 0.5rem 1rem; border-radius: 8px; border: 2px solid #000; font-family: 'Press Start 2P', cursive; font-size: 1rem; }
     
-    .q-card { flex: 1; background: #fff; border: 4px solid #000; border-radius: 15px; padding: 2rem; box-shadow: 6px 6px 0 #000; display: flex; flex-direction: column; }
-    /* Penyesuaian khusus untuk huruf Arab */
+    /* Question Card */
+    .q-card { flex: 1; background: #fff; border: 4px solid #000; border-radius: 15px; padding: 1.5rem; box-shadow: 6px 6px 0 #000; display: flex; flex-direction: column; }
+    /* Penyesuaian font agar huruf Arab terlihat jelas dan besar */
     .q-text { font-size: 1.8rem; font-weight: 700; text-align: center; margin-bottom: 2rem; line-height: 1.6; flex: 1; display: flex; align-items: center; justify-content: center; direction: rtl; }
     
-    .opt-btn { width: 100%; text-align: left; padding: 1rem; border: 3px solid #000; border-radius: 10px; background: #f8fafc; font-size: 1.3rem; font-weight: 700; cursor: pointer; transition: all 0.1s; margin-bottom: 0.8rem; box-shadow: 4px 4px 0 #000; direction: rtl; }
+    .opt-btn { width: 100%; text-align: left; padding: 1rem; border: 3px solid #000; border-radius: 10px; background: #f8fafc; font-size: 1.3rem; font-weight: 700; cursor: pointer; transition: all 0.1s; margin-bottom: 0.8rem; box-shadow: 4px 4px 0 #000; direction: rtl; display: flex; gap: 10px; align-items: center;}
     .opt-btn:active:not(:disabled) { transform: translate(3px, 3px); box-shadow: 1px 1px 0 #000; }
     .opt-btn.correct { background: #4ade80; color: #000; }
     .opt-btn.wrong { background: #fca5a5; color: #000; }
     
-    .feedback-box { margin-top: 1rem; padding: 1rem; border: 3px solid #000; border-radius: 10px; font-weight: 700; text-align: center; display: none; }
+    .feedback-box { margin-top: 1rem; padding: 1rem; border: 3px solid #000; border-radius: 10px; font-weight: 700; text-align: center; display: none; font-size: 1.2rem;}
     
     /* Utilities */
     .hidden { display: none !important; }
-    #toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: #1e293b; color: white; padding: 10px 20px; border-radius: 8px; border: 3px solid #000; font-weight: 700; display: none; z-index: 100; text-align: center;}
-    .loading-spinner { display: inline-block; width: 20px; height: 20px; border: 3px solid rgba(0,0,0,0.3); border-radius: 50%; border-top-color: #000; animation: spin 1s ease-in-out infinite; }
-    @keyframes spin { to { transform: rotate(360deg); } }
+    #toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: #1e293b; color: white; padding: 10px 20px; border-radius: 8px; border: 3px solid #000; font-weight: 700; display: none; z-index: 100; text-align: center; box-shadow: 4px 4px 0 #000;}
   </style>
 </head>
 <body>
 
   <div class="header">
-    <h1>KUIS ARKA</h1>
+    <h1 onclick="kembaliKeMenu()">KUIS ARKA</h1>
   </div>
 
   <div class="container">
     
-    <!-- HALAMAN SETUP -->
+    <!-- HALAMAN SETUP / PENGATURAN -->
     <div id="setupScreen">
       
-      <!-- Info Bank Soal & AI -->
-      <div class="card" style="background-color: #e0f2fe;">
-        <div class="card-header"><i class="fas fa-robot text-blue-500"></i> AI Soal Generator</div>
-        <p style="font-size: 0.85rem; margin-bottom: 1rem;">Tempelkan link file PDF dari GitHub Bapak di bawah ini. AI akan membaca foto halaman tersebut dan membuatkan soal bahasa Arab secara otomatis!</p>
+      <div id="cardPilihMateri" class="card">
+        <div class="card-header"><i class="fas fa-book text-blue-500"></i> Pilih Materi</div>
         
         <div class="form-group">
-          <!-- Default contoh link, nanti Bapak ganti dengan link asli -->
-          <input type="text" id="pdfLinkInput" class="form-input" placeholder="https://raw.githubusercontent.com/.../Buku.pdf" value="https://raw.githubusercontent.com/username/repo/main/Bahasa_Arab_BAB_1.pdf">
+          <span class="form-label">Mata Pelajaran</span>
+          <select id="selectMapel" class="form-select" onchange="updateDropdownBab()">
+            <option value="">-- Pilih Mata Pelajaran --</option>
+            <!-- Diisi oleh JavaScript -->
+          </select>
         </div>
-        
-        <button id="btnGenerateAI" class="btn btn-magic" onclick="buatSoalDariAI()">
-          <i class="fas fa-magic"></i> BACA PDF & BUAT SOAL
-        </button>
-        <p style="text-align: center; font-size: 0.8rem; margin-top: 10px; font-weight: 600;">
-          Total soal di memori: <span id="jmlBankSoal" style="color: #2563eb; font-size: 1rem;">0</span>
-        </p>
+
+        <div class="form-group">
+          <span class="form-label">Bab / Topik</span>
+          <select id="selectBab" class="form-select">
+            <option value="">-- Pilih Bab --</option>
+            <!-- Diisi oleh JavaScript -->
+          </select>
+        </div>
       </div>
 
-      <!-- Pengaturan Bermain -->
       <div class="card">
         <div class="card-header"><i class="fas fa-gamepad text-green-500"></i> Pengaturan Bermain</div>
         
@@ -113,8 +126,7 @@
             <div class="radio-card"><input type="radio" id="j_10" name="jumlah" value="10" onchange="toggleBebas()"><label for="j_10">10</label></div>
             <div class="radio-card"><input type="radio" id="j_bebas" name="jumlah" value="bebas" onchange="toggleBebas()"><label for="j_bebas">Bebas</label></div>
           </div>
-          <!-- Kolom input untuk jumlah bebas -->
-          <input type="number" id="inputBebas" class="form-input hidden mt-2" placeholder="Ketik jumlah soal..." style="margin-top: 0.8rem;" min="1">
+          <input type="number" id="inputBebas" class="form-input hidden" placeholder="Ketik jumlah soal..." style="margin-top: 0.8rem;" min="1">
         </div>
         
         <button class="btn btn-primary" onclick="mulaiMain()" style="margin-top: 1rem; padding: 1rem; font-size: 1.2rem;">
@@ -134,7 +146,7 @@
       </div>
       
       <div class="q-card">
-        <div id="teksSoal" class="q-text">Pertanyaan akan muncul di sini...</div>
+        <div id="teksSoal" class="q-text">Pertanyaan...</div>
         <div id="areaOpsi"></div>
         <div id="kotakUmpanBalik" class="feedback-box"></div>
       </div>
@@ -146,16 +158,16 @@
     <div id="resultScreen">
       <div class="card" style="text-align: center; padding: 3rem 1.5rem;">
         <i class="fas fa-trophy" style="font-size: 5rem; color: #fde047; text-shadow: 4px 4px 0 #000; margin-bottom: 1rem;"></i>
-        <h2 style="font-family: 'Press Start 2P', cursive; margin-bottom: 1rem;">SELESAI!</h2>
+        <h2 style="font-family: 'Press Start 2P', cursive; margin-bottom: 1rem; line-height: 1.4;">SELESAI!</h2>
         
         <div style="background: #f8fafc; border: 4px solid #000; border-radius: 15px; padding: 2rem; margin-bottom: 2rem; box-shadow: 4px 4px 0 #000;">
           <span style="font-weight: 700; color: #64748b; text-transform: uppercase;">Skor Kamu</span>
           <div id="skorAkhir" style="font-size: 4rem; font-weight: 900; color: #3b82f6;">100</div>
-          <p style="font-weight: 700; margin-top: 10px;">Benar <span id="benarAkhir" style="color: #16a34a;">0</span> dari <span id="totalAkhir">0</span></p>
+          <p style="font-weight: 700; margin-top: 10px; font-size: 1.2rem;">Benar <span id="benarAkhir" style="color: #16a34a;">0</span> dari <span id="totalAkhir">0</span></p>
         </div>
         
-        <button class="btn btn-primary" onclick="kembaliKeMenu()">
-          <i class="fas fa-home"></i> KEMBALI KE MENU
+        <button class="btn btn-primary" onclick="kembaliKeMenu()" style="padding: 1rem;">
+          <i class="fas fa-home"></i> MAIN LAGI
         </button>
       </div>
     </div>
@@ -166,12 +178,47 @@
 
   <script>
     // =========================================================================
-    // ⚠️ GANTI STRING DI BAWAH INI DENGAN URL WEB APP GOOGLE SCRIPT BAPAK
+    // DATABASE BANK SOAL MANUAL (PASTE SOAL DARI AI KE SINI)
     // =========================================================================
-    const GAS_URL = "https://script.google.com/macros/s/AKfycbySVN_REzsi_R8p4Pjgptvm-bSCfw6dx45-6f5D3Q6lk7v52wRfuYQ-Qa8R-SaNAoRi/exec";
-    
-    // --- DATABASE LOKAL ---
-    let bankSoal = JSON.parse(localStorage.getItem('arkaBankSoalArab')) || [];
+    const BANK_SOAL = [
+      {
+        "mapel": "Bahasa Arab",
+        "bab": "Bab 1: Rukun Islam",
+        "soal": "مِنْ شُرُوْطِ الْإِسْلَامِ ... الشَّهَادَتَيْنِ",
+        "opsi": ["إِقْرَارُ", "إِنْكَارُ", "تَرْكُ", "نِسْيَانُ"],
+        "jawaban": "إِقْرَارُ"
+      },
+      {
+        "mapel": "Bahasa Arab",
+        "bab": "Bab 1: Rukun Islam",
+        "soal": "أَرْكَانُ الْإِسْلَامِ ...",
+        "opsi": ["ثَلَاثَةٌ", "أَرْبَعَةٌ", "خَمْسَةٌ", "سِتَّةٌ"],
+        "jawaban": "خَمْسَةٌ"
+      },
+      {
+        "mapel": "Bahasa Arab",
+        "bab": "Bab 1: Rukun Islam",
+        "soal": "وَالشَّهَادَةُ رُكْنٌ مِنْ أَرْكَانِ ...",
+        "opsi": ["الْإِيْمَانِ", "الْإِسْلَامِ", "الْإِحْسَانِ", "الصَّلَاةِ"],
+        "jawaban": "الْإِسْلَامِ"
+      },
+      {
+        "mapel": "Bahasa Arab",
+        "bab": "Bab 1: Rukun Islam",
+        "soal": "مَاذَا تَفْعَلُ بَعْدَ صَلَاةِ الصُّبْحِ؟ ... الْقُرْآنَ",
+        "opsi": ["أَقْرَأُ", "أَكْتُبُ", "أَنَامُ", "أَلْعَبُ"],
+        "jawaban": "أَقْرَأُ"
+      },
+      {
+        "mapel": "Matematika",
+        "bab": "Bab 1: Penjumlahan",
+        "soal": "Berapakah hasil dari 15 + 12?",
+        "opsi": ["25", "27", "28", "30"],
+        "jawaban": "27"
+      }
+      // Bapak bisa menambahkan kurung kurawal baru di bawah ini jika ada soal baru
+    ];
+
     let sesiSoal = [];
     let indexSoal = 0;
     let skor = 0;
@@ -179,13 +226,53 @@
     let timer = null;
     let isLatihan = true;
 
-    // --- INISIALISASI ---
-    window.onload = () => { updateUIBankSoal(); };
+    window.onload = () => { 
+      initDropdowns(); 
+      cekParameterURL();
+    };
+
+    // FUNGSI BARU: Membaca pesan dari Link URL
+    function cekParameterURL() {
+      const urlParams = new URLSearchParams(window.location.search);
+      const paramMapel = urlParams.get('mapel');
+      const paramBab = urlParams.get('bab');
+
+      if(paramMapel && paramBab) {
+        const selectMapel = document.getElementById('selectMapel');
+        const mapelOptions = Array.from(selectMapel.options);
+        // Cek nama mapel
+        const matchMapel = mapelOptions.find(opt => opt.value.toLowerCase() === paramMapel.toLowerCase());
+        
+        if(matchMapel) {
+          selectMapel.value = matchMapel.value;
+          updateDropdownBab();
+          
+          const selectBab = document.getElementById('selectBab');
+          const babOptions = Array.from(selectBab.options);
+          // Gunakan includes agar "Bab 1" bisa nyambung dengan "Bab 1: Rukun Islam"
+          const matchBab = babOptions.find(opt => opt.value.toLowerCase().includes(paramBab.toLowerCase()));
+          
+          if(matchBab) {
+            selectBab.value = matchBab.value;
+            
+            // Sembunyikan form pilih materi agar rapi
+            document.getElementById('cardPilihMateri').style.display = 'none';
+            
+            // Tambahkan banner info materi terpilih
+            const infoDiv = document.createElement('div');
+            infoDiv.style.cssText = "background: #bfdbfe; border: 4px solid #000; border-radius: 12px; padding: 1rem; margin-bottom: 1.5rem; text-align: center; box-shadow: 4px 4px 0 #000;";
+            infoDiv.innerHTML = `<i class="fas fa-check-circle" style="color: #2563eb; font-size: 1.5rem; margin-bottom: 5px;"></i><br><span style="font-size: 0.8rem; font-weight: 700; text-transform: uppercase; color: #475569;">Materi Terpilih:</span><br><span style="color:#1d4ed8; font-size:1.2rem; font-weight: 900;">${matchMapel.value}<br>${matchBab.value}</span>`;
+            
+            document.getElementById('setupScreen').insertBefore(infoDiv, document.getElementById('cardPilihMateri'));
+          }
+        }
+      }
+    }
 
     function showToast(msg) {
       const t = document.getElementById('toast');
       t.innerText = msg; t.style.display = 'block';
-      setTimeout(() => { t.style.display = 'none'; }, 4000);
+      setTimeout(() => { t.style.display = 'none'; }, 3000);
     }
 
     function toggleBebas() {
@@ -197,59 +284,41 @@
       }
     }
 
-    function updateUIBankSoal() {
-      document.getElementById('jmlBankSoal').innerText = bankSoal.length;
+    function initDropdowns() {
+      const selectMapel = document.getElementById('selectMapel');
+      const mapelSet = [...new Set(BANK_SOAL.map(item => item.mapel))];
+      
+      selectMapel.innerHTML = '<option value="">-- Pilih Mata Pelajaran --</option>';
+      mapelSet.forEach(m => {
+        selectMapel.innerHTML += `<option value="${m}">${m}</option>`;
+      });
     }
 
-    // --- FITUR MATA AI (KIRIM LINK PDF KE GAS -> GEMINI) ---
-    async function buatSoalDariAI() {
-      const linkPdf = document.getElementById('pdfLinkInput').value.trim();
-      if(!linkPdf) return showToast("Masukkan link PDF GitHub terlebih dahulu!");
-
-      if (GAS_URL.includes("MASUKKAN_URL")) {
-         return showToast("⚠️ Anda belum memasukkan URL Google Apps Script ke dalam kode HTML!");
-      }
-
-      const btn = document.getElementById('btnGenerateAI');
-      const oriText = btn.innerHTML;
-      btn.innerHTML = '<div class="loading-spinner"></div> AI Sedang Membaca Gambar...';
-      btn.disabled = true;
-
-      try {
-        // Melakukan Fetch (Kirim link ke Google Apps Script Bapak)
-        const response = await fetch(GAS_URL, {
-          method: 'POST',
-          body: JSON.stringify({ pdfUrl: linkPdf })
-        });
-        
-        const soalBaruJSON = await response.json();
-        
-        if(soalBaruJSON.error) {
-           throw new Error(soalBaruJSON.error);
-        }
-        
-        // Simpan soal dari AI ke memori browser
-        bankSoal = [...bankSoal, ...soalBaruJSON];
-        localStorage.setItem('arkaBankSoalArab', JSON.stringify(bankSoal));
-        
-        updateUIBankSoal();
-        showToast("🎉 Sukses! AI telah membaca gambar dan membuat soal.");
-
-      } catch (e) {
-        alert("Gagal menghubungi AI atau terjadi error: \n" + e.message);
-      } finally {
-        btn.innerHTML = oriText;
-        btn.disabled = false;
-      }
+    function updateDropdownBab() {
+      const mapelTerpilih = document.getElementById('selectMapel').value;
+      const selectBab = document.getElementById('selectBab');
+      selectBab.innerHTML = '<option value="">-- Pilih Bab --</option>';
+      
+      if(!mapelTerpilih) return;
+      
+      const babSet = [...new Set(BANK_SOAL.filter(i => i.mapel === mapelTerpilih).map(i => i.bab))];
+      babSet.forEach(b => {
+        selectBab.innerHTML += `<option value="${b}">${b}</option>`;
+      });
     }
 
-    // --- LOGIKA PERMAINAN ---
     function mulaiMain() {
-      if(bankSoal.length === 0) {
-        return showToast("Bank soal kosong! Generate AI dari PDF terlebih dahulu.");
-      }
+      const mapel = document.getElementById('selectMapel').value;
+      const bab = document.getElementById('selectBab').value;
+      
+      if(!mapel || !bab) return showToast("Pilih Mata Pelajaran dan Bab terlebih dahulu!");
 
-      // Ambil jumlah soal yang diminta user
+      // Filter soal berdasarkan pilihan
+      let soalTersedia = BANK_SOAL.filter(i => i.mapel === mapel && i.bab === bab);
+      
+      if(soalTersedia.length === 0) return showToast("Belum ada soal untuk Bab ini.");
+
+      // Ambil jumlah soal yang diminta
       let jmlMinta = 5;
       if(document.getElementById('j_bebas').checked) {
         jmlMinta = parseInt(document.getElementById('inputBebas').value) || 5;
@@ -257,19 +326,17 @@
         jmlMinta = parseInt(document.querySelector('input[name="jumlah"]:checked').value);
       }
 
-      // Pastikan tidak melebihi stok di bank soal
-      if(jmlMinta > bankSoal.length) {
-        showToast(`Hanya ada ${bankSoal.length} soal di bank data. Menampilkan semuanya.`);
-        jmlMinta = bankSoal.length;
+      if(jmlMinta > soalTersedia.length) {
+        showToast(`Hanya tersedia ${soalTersedia.length} soal. Menampilkan semua.`);
+        jmlMinta = soalTersedia.length;
       }
 
       isLatihan = document.getElementById('m_latihan').checked;
       
       // Acak urutan soal
-      sesiSoal = [...bankSoal].sort(() => 0.5 - Math.random()).slice(0, jmlMinta);
+      sesiSoal = [...soalTersedia].sort(() => 0.5 - Math.random()).slice(0, jmlMinta);
       
-      indexSoal = 0; 
-      skor = 0;
+      indexSoal = 0; skor = 0;
       
       document.getElementById('setupScreen').style.display = 'none';
       document.getElementById('playScreen').style.display = 'flex';
@@ -280,7 +347,7 @@
         timerBox.style.display = 'none'; 
       } else { 
         timerBox.style.display = 'block'; 
-        waktuSisa = sesiSoal.length * 20; // 20 detik per soal
+        waktuSisa = sesiSoal.length * 30; // 30 detik per soal
         mulaiWaktu(); 
       }
 
@@ -314,13 +381,19 @@
       fbox.style.display = 'none';
       document.getElementById('btnLanjut').classList.add('hidden');
 
-      // Acak posisi opsi jawaban (A, B, C, D)
+      // Acak posisi opsi jawaban
       const opsiAcak = [...s.opsi].sort(() => 0.5 - Math.random());
+      
+      // Deteksi jika tulisan adalah bahasa Arab (untuk styling huruf pilihan A,B,C,D)
+      const isArab = /[\u0600-\u06FF]/.test(s.opsi[0]);
       
       opsiAcak.forEach((opt, i) => {
         const btn = document.createElement('button');
         btn.className = 'opt-btn';
-        btn.innerText = `${String.fromCharCode(65+i)}. ${opt}`;
+        // Prefix A, B, C, D
+        const abjad = isArab ? ['أ', 'ب', 'ج', 'د'][i] : ['A', 'B', 'C', 'D'][i];
+        
+        btn.innerHTML = `<span>${abjad}.</span> <span style="flex:1; text-align:${isArab ? 'right' : 'left'}">${opt}</span>`;
         btn.onclick = () => cekJawaban(opt, btn);
         area.appendChild(btn);
       });
@@ -331,11 +404,12 @@
       const benar = (jawabanUser === s.jawaban);
       
       const semuaBtn = document.querySelectorAll('.opt-btn');
-      semuaBtn.forEach(b => b.disabled = true); // Kunci semua tombol
+      semuaBtn.forEach(b => b.disabled = true); 
 
       if(isLatihan) {
         semuaBtn.forEach(b => {
-          if(b.innerText.substring(3) === s.jawaban) b.classList.add('correct');
+          // Cek teks di dalam span kedua (isi opsi)
+          if(b.children[1].innerText === s.jawaban) b.classList.add('correct');
         });
         if(!benar) el.classList.add('wrong');
 
@@ -347,7 +421,7 @@
           fbox.innerHTML = '<i class="fas fa-check-circle"></i> MUMTAZ! TEPAT SEKALI!';
         } else {
           fbox.style.backgroundColor = '#fee2e2'; fbox.style.borderColor = '#dc2626'; fbox.style.color = '#991b1b';
-          fbox.innerHTML = `SALAH. Jawaban yang benar: <b>${s.jawaban}</b>`;
+          fbox.innerHTML = `SALAH. Jawaban yang benar:<br><br><span style="font-size:1.5rem; color:#000;">${s.jawaban}</span>`;
         }
         document.getElementById('btnLanjut').classList.remove('hidden');
       } else {
@@ -375,7 +449,9 @@
 
     function kembaliKeMenu() {
       document.getElementById('resultScreen').style.display = 'none';
+      document.getElementById('playScreen').style.display = 'none';
       document.getElementById('setupScreen').style.display = 'block';
+      clearInterval(timer);
     }
   </script>
 </body>
