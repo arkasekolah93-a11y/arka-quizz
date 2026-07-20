@@ -11,7 +11,7 @@
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body { 
       font-family: 'Fredoka', sans-serif; 
-      background-color: #fde047; /* Kuning ceria */
+      background-color: #fde047; 
       background-image: radial-gradient(#000 1px, transparent 1px);
       background-size: 20px 20px;
       color: #000; 
@@ -147,7 +147,6 @@
       <div id="waktuBox" class="hidden">WAKTU: <span id="waktuSisa">0</span>s</div>
     </div>
     
-    <!-- Tempat memunculkan gambar/video sekarang di ATAS teks soal -->
     <div id="tempatMedia" class="media-box hidden"></div>
     
     <h2 id="teksSoal" style="text-align: left; font-family: 'Fredoka'; font-size: 1.5rem; margin-bottom: 1.5rem;">Pertanyaan...</h2>
@@ -172,7 +171,7 @@
   </div>
 
   <script>
-    // 1. MASUKKAN LINK GOOGLE APPS SCRIPT KUIS BAPAK DI SINI:
+    // MASUKKAN LINK GOOGLE APPS SCRIPT KUIS BAPAK DI SINI:
     const GAS_URL = "https://script.google.com/macros/s/AKfycbxOeIJAjNpZ4Qf0uYom7l0fvSNh25D4jHLMjG3-9-DZjmcBLcf_Ie1Ps__XkithIHP4/exec"; 
 
     let BANK_SOAL_GLOBAL = [];
@@ -187,7 +186,6 @@
     let targetMapel = "";
     let targetBab = "";
 
-    // Membaca URL saat pertama dibuka
     window.onload = async function() {
       const urlParams = new URLSearchParams(window.location.search);
       targetKelas = urlParams.get('kelas') || "";
@@ -237,6 +235,13 @@
       }
     }
 
+    // FUNGSI PEMBERSIH TEKS SUPER (MENGHAPUS SPASI & SIMBOL UNTUK PENCOCOKAN)
+    function bersihkanTeks(teks) {
+      if(!teks) return "";
+      // Ubah ke huruf kecil dan hapus semua spasi serta karakter non-alfanumerik
+      return teks.toString().toLowerCase().replace(/[^a-z0-9]/g, '');
+    }
+
     function mulaiKuis() {
       const mode = document.getElementById('setMode').value;
       const tipe = document.getElementById('setTipe').value;
@@ -248,32 +253,43 @@
         jumlahMinta = parseInt(jumlahMinta);
       }
 
-      // 1. Saring soal berdasarkan Kelas, Mapel & Bab yang diklik anak
+      // 1. SARING SOAL (ANTI TYPO)
       soalTersaring = BANK_SOAL_GLOBAL.filter(s => {
-        let cocokKelas = targetKelas ? (s.kelas.toString() === targetKelas.toString()) : true;
-        let cocokMapel = targetMapel ? (s.mapel.toLowerCase() === targetMapel.toLowerCase()) : true;
-        let cocokBab = targetBab ? (s.bab.toLowerCase() === targetBab.toLowerCase()) : true;
+        let k1 = bersihkanTeks(s.kelas);
+        let k2 = bersihkanTeks(targetKelas);
+        let cocokKelas = targetKelas ? (k1 === k2 || k1.includes(k2)) : true;
+        
+        let m1 = bersihkanTeks(s.mapel);
+        let m2 = bersihkanTeks(targetMapel);
+        let cocokMapel = targetMapel ? (m1 === m2) : true;
+        
+        let b1 = bersihkanTeks(s.bab);
+        let b2 = bersihkanTeks(targetBab);
+        let cocokBab = targetBab ? (b1 === b2) : true;
+        
         let cocokTipe = (tipe === 'semua') ? true : (s.tipe === tipe);
         
         return cocokKelas && cocokMapel && cocokBab && cocokTipe;
       });
 
       if(soalTersaring.length === 0) {
-        alert("Waduh! Soal untuk materi ini belum ada di Bank Soal (Google Sheets).");
+        // Tampilkan peringatan beserta contoh data pertama di sheets agar mudah di-debug
+        let infoDebug = BANK_SOAL_GLOBAL.length > 0 
+          ? `\n\nBOCORAN DATA DI GOOGLE SHEETS BAPAK:\nNama Tab (Mapel): ${BANK_SOAL_GLOBAL[0].mapel}\nNama Bab: ${BANK_SOAL_GLOBAL[0].bab}`
+          : "\n\nDatabase di Google Sheets Bapak kosong atau gagal terbaca.";
+        
+        alert("Waduh! Soal untuk materi ini belum ada." + infoDebug);
         return;
       }
 
-      // 2. Acak Soal
       soalTersaring.sort(() => Math.random() - 0.5);
 
-      // 3. Batasi Jumlah Soal (Fallback)
       if(jumlahMinta > soalTersaring.length) {
         alert(`Jumlah soal yang diminta (${jumlahMinta}) terlalu banyak. Bank Soal hanya punya ${soalTersaring.length} soal. Kita pakai semuanya ya!`);
         jumlahMinta = soalTersaring.length;
       }
       soalTersaring = soalTersaring.slice(0, jumlahMinta);
 
-      // 4. Setup Layar
       document.getElementById('setupScreen').classList.add('hidden');
       document.getElementById('playScreen').classList.remove('hidden');
       document.getElementById('soalTotal').innerText = soalTersaring.length;
@@ -290,24 +306,20 @@
       
       document.getElementById('soalKe').innerText = indexSoal + 1;
       
-      // Urus Media (Gambar/Video) diletakkan di atas Teks Soal
       const tempatMedia = document.getElementById('tempatMedia');
       tempatMedia.innerHTML = "";
       tempatMedia.classList.add('hidden');
       if (soalKini.media) {
           tempatMedia.classList.remove('hidden');
-          // Deteksi apakah link YouTube
           if(soalKini.media.includes('youtube.com') || soalKini.media.includes('youtu.be')) {
               let ytId = soalKini.media.split('v=')[1] || soalKini.media.split('youtu.be/')[1];
               if(ytId) ytId = ytId.split('&')[0];
               tempatMedia.innerHTML = `<iframe width="100%" height="200" src="https://www.youtube.com/embed/${ytId}" frameborder="0" allowfullscreen></iframe>`;
           } else {
-              // Anggap sebagai gambar biasa
-              tempatMedia.innerHTML = `<img src="${soalKini.media}" alt="Media Pendukung Soal">`;
+              tempatMedia.innerHTML = `<img src="${soalKini.media}" alt="Media">`;
           }
       }
 
-      // Deteksi Teks Arab
       let teksElement = document.getElementById('teksSoal');
       teksElement.innerText = soalKini.soal;
       if(/[\u0600-\u06FF]/.test(soalKini.soal)) { teksElement.classList.add('arabic-text'); } 
@@ -339,7 +351,7 @@
         tempatUraian.classList.remove('hidden');
       }
 
-      if(mode === 'kuis') { jalankanWaktu(30); } // 30 detik per soal
+      if(mode === 'kuis') { jalankanWaktu(30); }
     }
 
     function jalankanWaktu(detik) {
@@ -362,7 +374,6 @@
 
     function cekJawaban(btnKlik, opsiDipilih, kunci) {
       clearInterval(waktuTimer);
-      // Kunci semua tombol agar tidak diklik dua kali
       let semuaBtn = document.querySelectorAll('.btn-option');
       semuaBtn.forEach(b => b.disabled = true);
 
