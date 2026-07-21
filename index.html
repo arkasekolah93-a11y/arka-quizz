@@ -104,9 +104,9 @@
 
   <!-- Layar Loading Data -->
   <div id="loadingScreen" class="card" style="text-align: center; padding: 4rem 2rem;">
-    <i class="fas fa-spinner fa-spin"></i>
-    <h2>MEMUAT BANK SOAL...</h2>
-    <p>Menghubungkan ke Google Sheets</p>
+    <i class="fas fa-gamepad fa-bounce" style="font-size: 3rem; color: #3b82f6; margin-bottom: 1rem;"></i>
+    <h2>MENYIAPKAN ARENA BERMAIN...</h2>
+    <p>Memuat teka-teki seru...</p>
   </div>
 
   <!-- Layar Pengaturan Kuis -->
@@ -116,10 +116,21 @@
     <div id="bannerInfo" class="info-banner hidden"></div>
 
     <label>Mode Bermain:</label>
-    <select id="setMode">
+    <select id="setMode" onchange="toggleWaktuSetup()">
       <option value="latihan">🎓 Latihan (Tanpa Waktu)</option>
       <option value="kuis">⏱️ Kuis Cepat (Ada Waktu)</option>
     </select>
+
+    <div id="waktuSetupBox" class="hidden">
+      <label>Waktu Per Soal:</label>
+      <select id="setWaktu" onchange="toggleCustomWaktu()">
+        <option value="5">5 Detik</option>
+        <option value="10">10 Detik</option>
+        <option value="15">15 Detik</option>
+        <option value="bebas">Bebas (Ketik Sendiri)</option>
+      </select>
+      <input type="number" id="customWaktu" class="hidden" placeholder="Masukkan detik..." style="margin-top:10px;" min="1">
+    </div>
 
     <label>Jenis Soal:</label>
     <select id="setTipe">
@@ -155,7 +166,7 @@
     
     <div id="tempatUraian" class="hidden">
       <input type="text" id="inputUraian" placeholder="Ketik jawabanmu di sini...">
-      <button class="btn btn-primary" onclick="cekUraian()" style="margin-top: 10px;">KUNCI JAWABAN <i class="fas fa-check"></i></button>
+      <button class="btn btn-primary" onclick="cekUraian()" style="margin-top: 10px;">JAWAB <i class="fas fa-check"></i></button>
     </div>
 
     <div id="feedback" class="info-banner hidden" style="margin-top: 1rem;"></div>
@@ -181,6 +192,7 @@
     let skorSalah = 0;
     let waktuTimer;
     let sisaWaktu = 0;
+    let waktuPerSoal = 0;
 
     let targetKelas = "";
     let targetMapel = "";
@@ -235,6 +247,24 @@
       }
     }
 
+    function toggleWaktuSetup() {
+      const val = document.getElementById('setMode').value;
+      if(val === 'kuis') {
+        document.getElementById('waktuSetupBox').classList.remove('hidden');
+      } else {
+        document.getElementById('waktuSetupBox').classList.add('hidden');
+      }
+    }
+
+    function toggleCustomWaktu() {
+      const val = document.getElementById('setWaktu').value;
+      if(val === 'bebas') {
+        document.getElementById('customWaktu').classList.remove('hidden');
+      } else {
+        document.getElementById('customWaktu').classList.add('hidden');
+      }
+    }
+
     // FUNGSI PEMBERSIH TEKS SUPER (MENGHAPUS SPASI & SIMBOL UNTUK PENCOCOKAN)
     function bersihkanTeks(teks) {
       if(!teks) return "";
@@ -253,6 +283,16 @@
         jumlahMinta = parseInt(jumlahMinta);
       }
 
+      // Ambil nilai waktu jika mode kuis
+      if(mode === 'kuis') {
+        let w = document.getElementById('setWaktu').value;
+        if(w === 'bebas') {
+          waktuPerSoal = parseInt(document.getElementById('customWaktu').value) || 10;
+        } else {
+          waktuPerSoal = parseInt(w);
+        }
+      }
+
       // 1. SARING SOAL (ANTI TYPO & SUPER PINTAR)
       soalTersaring = BANK_SOAL_GLOBAL.filter(s => {
         let k1 = bersihkanTeks(s.kelas);
@@ -263,7 +303,7 @@
         let m2 = bersihkanTeks(targetMapel);
         let cocokMapel = targetMapel ? (m1 === m2) : true;
         
-        // --- KODE BARU: Pencocokan Bab Ekstrak Angka ---
+        // --- Pencocokan Bab Ekstrak Angka ---
         // Mencari angka di dalam teks (Misal: "Bab 1-2" jadi ['1', '2'])
         let angkaBabSoal = s.bab.toString().match(/\d+/g) || [];
         let angkaBabTarget = targetBab.toString().match(/\d+/g) || [];
@@ -280,7 +320,6 @@
                 cocokBab = (b1 === b2 || b2.includes(b1) || b1.includes(b2));
             }
         }
-        // --- AKHIR KODE BARU ---
         
         let cocokTipe = (tipe === 'semua') ? true : (s.tipe === tipe);
         
@@ -288,7 +327,6 @@
       });
 
       if(soalTersaring.length === 0) {
-        // Tampilkan peringatan beserta contoh data pertama di sheets agar mudah di-debug
         let infoDebug = BANK_SOAL_GLOBAL.length > 0 
           ? `\n\nBOCORAN DATA DI GOOGLE SHEETS BAPAK:\nNama Tab (Mapel): ${BANK_SOAL_GLOBAL[0].mapel}\nNama Bab: ${BANK_SOAL_GLOBAL[0].bab}`
           : "\n\nDatabase di Google Sheets Bapak kosong atau gagal terbaca.";
@@ -304,6 +342,21 @@
         jumlahMinta = soalTersaring.length;
       }
       soalTersaring = soalTersaring.slice(0, jumlahMinta);
+
+      // 2. PERBAIKAN BUG KUNCI JAWABAN (A/B/C/D)
+      soalTersaring.forEach(s => {
+        if (s.tipe === 'ganda') {
+          let k = s.jawaban.toString().toUpperCase().trim();
+          // Jika Bapak mengisi kunci dengan A, B, C, atau D, kita ubah jadi teks aslinya
+          if (k === 'A' && s.opsi[0]) s.jawabanBenarTeks = s.opsi[0];
+          else if (k === 'B' && s.opsi[1]) s.jawabanBenarTeks = s.opsi[1];
+          else if (k === 'C' && s.opsi[2]) s.jawabanBenarTeks = s.opsi[2];
+          else if (k === 'D' && s.opsi[3]) s.jawabanBenarTeks = s.opsi[3];
+          else s.jawabanBenarTeks = s.jawaban; // Kalau sudah teks (misal: "Tiga"), biarkan saja
+        } else {
+          s.jawabanBenarTeks = s.jawaban;
+        }
+      });
 
       document.getElementById('setupScreen').classList.add('hidden');
       document.getElementById('playScreen').classList.remove('hidden');
@@ -358,7 +411,7 @@
           btn.className = 'btn btn-option';
           btn.innerText = opsi;
           if(/[\u0600-\u06FF]/.test(opsi)) { btn.classList.add('arabic-text'); }
-          btn.onclick = () => cekJawaban(btn, opsi, soalKini.jawaban);
+          btn.onclick = () => cekJawaban(btn, opsi, soalKini.jawabanBenarTeks);
           tempatOpsi.appendChild(btn);
         });
       } else {
@@ -366,7 +419,7 @@
         tempatUraian.classList.remove('hidden');
       }
 
-      if(mode === 'kuis') { jalankanWaktu(30); }
+      if(mode === 'kuis') { jalankanWaktu(waktuPerSoal); }
     }
 
     function jalankanWaktu(detik) {
@@ -403,7 +456,7 @@
       let isi = document.getElementById('inputUraian').value;
       if(!isi) return;
       document.getElementById('inputUraian').disabled = true;
-      let kunci = soalTersaring[indexSoal].jawaban;
+      let kunci = soalTersaring[indexSoal].jawabanBenarTeks;
       
       let benar = isi.toString().toLowerCase().trim() === kunci.toString().toLowerCase().trim();
       tampilkanFeedback(benar, kunci);
@@ -415,7 +468,7 @@
       semuaBtn.forEach(b => b.disabled = true);
       document.getElementById('inputUraian').disabled = true;
       skorSalah++;
-      tampilkanFeedback(false, soalTersaring[indexSoal].jawaban, true);
+      tampilkanFeedback(false, soalTersaring[indexSoal].jawabanBenarTeks, true);
     }
 
     function tampilkanFeedback(benar, kunci, waktuHabis = false) {
