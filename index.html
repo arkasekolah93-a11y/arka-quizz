@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Hero Quiz Arena</title>
+  <title>ARKA QUIZZ</title>
 
   <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -74,6 +74,7 @@
     .brutal-btn.secondary { background-color: var(--secondary); color: var(--dark); }
     .brutal-btn.danger { background-color: var(--danger); }
     .brutal-btn.success { background-color: var(--success); }
+    .brutal-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: translate(4px, 4px); box-shadow: 0px 0px 0px var(--dark); }
 
     .brutal-input {
       width: 100%;
@@ -133,14 +134,14 @@
   </button>
 
   <h1 class="pixel-font text-white text-xl md:text-2xl mb-6 mt-4 text-center" style="text-shadow: 3px 3px 0 #000, -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;">
-    HERO QUIZ ARENA
+    ARKA QUIZZ
   </h1>
 
   <!-- SCREEN 1: LOADING -->
   <div id="screenLoading" class="brutal-box text-center">
     <i class="fas fa-rocket fa-bounce text-5xl text-blue-500 mb-4"></i>
     <h2 class="pixel-font text-sm mb-2" id="loadingText">MENYIAPKAN ARENA BERMAIN...</h2>
-    <p class="text-sm text-gray-600">Mengambil senjata dan misi rahasia...</p>
+    <p class="text-sm text-gray-600" id="loadingSub">Mengambil senjata dan misi rahasia...</p>
   </div>
 
   <!-- SCREEN 2: PENGATURAN KUIS -->
@@ -158,14 +159,16 @@
     <!-- Pilihan Waktu (Hanya muncul jika Kuis Cepat) -->
     <div id="wadahWaktu" class="hidden">
       <label class="font-bold mb-1 block text-red-600">Batas Waktu per Soal:</label>
-      <select id="setDurasi" class="brutal-input border-red-500">
+      <select id="setDurasi" class="brutal-input border-red-500" onchange="toggleWaktuBebas()">
         <option value="5">5 Detik</option>
         <option value="10" selected>10 Detik</option>
         <option value="15">15 Detik</option>
         <option value="20">20 Detik</option>
         <option value="30">30 Detik</option>
         <option value="60">60 Detik</option>
+        <option value="bebas">Bebas (Ketik Sendiri)</option>
       </select>
+      <input type="number" id="inputWaktuBebas" class="brutal-input hidden border-red-500" placeholder="Ketik detik (misal: 45)" min="1">
     </div>
 
     <label class="font-bold mb-1 block mt-2">Jenis Soal:</label>
@@ -184,7 +187,7 @@
     </select>
     <input type="number" id="inputJumlahBebas" class="brutal-input hidden" placeholder="Masukkan jumlah..." min="1">
 
-    <button class="brutal-btn success mt-4 pixel-font text-sm" onclick="mulaiKuis()">MULAI MISI 🚀</button>
+    <button id="btnMulaiKuis" class="brutal-btn success mt-4 pixel-font text-sm" onclick="mulaiKuis()">MULAI MISI 🚀</button>
   </div>
 
   <!-- SCREEN 3: ARENA BERMAIN -->
@@ -198,7 +201,7 @@
       <span class="pixel-font timer" id="timerAngka">10</span>
     </div>
 
-    <!-- Tempat Gambar / Video -->
+    <!-- Tempat Gambar / Video dipindah ke ATAS Soal -->
     <div id="tempatMedia" class="media-container hidden"></div>
 
     <div id="teksSoal" class="text-lg font-bold mb-6">Pertanyaan muncul di sini?</div>
@@ -206,10 +209,18 @@
     <!-- Tempat Pilihan Ganda -->
     <div id="areaGanda" class="opsi-grid hidden"></div>
 
-    <!-- Tempat Uraian -->
+    <!-- Tempat Uraian (Sudah diperbaiki dir="auto") -->
     <div id="areaUraian" class="hidden">
-      <input type="text" id="inputUraian" class="brutal-input teks-arab" placeholder="Ketik jawaban di sini...">
+      <!-- Menggunakan dir="auto" agar otomatis kiri ke kanan ATAU kanan ke kiri -->
+      <input type="text" id="inputUraian" class="brutal-input" dir="auto" placeholder="Ketik jawaban di sini...">
       <button class="brutal-btn primary" onclick="cekJawabanUraian()">JAWAB</button>
+    </div>
+
+    <!-- Kotak Notifikasi In-Frame (Bukan Popup Alert) -->
+    <div id="wadahNotif" class="hidden mt-6 p-4 rounded-xl border-4 border-black font-bold text-center">
+      <h3 id="judulNotif" class="text-2xl mb-2 pixel-font">BENAR!</h3>
+      <p id="pesanNotif" class="mb-4 text-lg">Kamu dapat 10 poin.</p>
+      <button id="btnLanjut" class="brutal-btn success pixel-font text-sm" onclick="lanjutSoal()">LANJUTKAN >></button>
     </div>
   </div>
 
@@ -224,7 +235,7 @@
 
   <script>
     // --- KONFIGURASI LINK SPREADSHEET GAS BAPAK ---
-    const GAS_URL = "https://script.google.com/macros/s/AKfycbxOeIJAjNpZ4Qf0uYom7l0fvSNh25D4jHLMjG3-9-DZjmcBLcf_Ie1Ps__XkithIHP4/exec"; // Ganti jika URL GAS Kuis Bapak berubah
+    const GAS_URL = "https://script.google.com/macros/s/AKfycbxOeIJAjNpZ4Qf0uYom7l0fvSNh25D4jHLMjG3-9-DZjmcBLcf_Ie1Ps__XkithIHP4/exec";
     
     let dbSoal = [];
     let soalAktif = [];
@@ -254,13 +265,19 @@
       }, ["C4", "E4", "G4", "E4", "A4", "G4", "C5", "G4"], "4n");
       Tone.Transport.bpm.value = 130;
 
-      // 2. SFX Benar (Nada naik ceria)
-      synthBenar = new Tone.PolySynth(Tone.Synth).toDestination();
+      // 2. SFX Benar (Nada lonceng digital lembut)
+      synthBenar = new Tone.PolySynth(Tone.Synth, {
+        oscillator: { type: "sine" },
+        envelope: { attack: 0.01, decay: 0.3, sustain: 0.1, release: 1 }
+      }).toDestination();
       synthBenar.volume.value = -10;
 
-      // 3. SFX Salah (Nada turun rendah)
-      synthSalah = new Tone.PolySynth(Tone.Synth).toDestination();
-      synthSalah.volume.value = -5;
+      // 3. SFX Salah (Nada buzzer digital pendek)
+      synthSalah = new Tone.PolySynth(Tone.Synth, {
+        oscillator: { type: "sawtooth" },
+        envelope: { attack: 0.01, decay: 0.1, sustain: 0, release: 0.1 }
+      }).toDestination();
+      synthSalah.volume.value = -15;
 
       // 4. SFX Tik Tok (Ketukan drum singkat)
       synthTik = new Tone.MembraneSynth().toDestination();
@@ -273,7 +290,9 @@
       if (audioAktif) {
         btn.innerHTML = '<i class="fas fa-volume-up"></i>';
         btn.style.backgroundColor = 'var(--secondary)';
-        if(bgmSeq && document.getElementById('screenPlay').classList.contains('hidden') === false) { Tone.Transport.start(); bgmSeq.start(0); }
+        if(bgmSeq && document.getElementById('screenPlay').classList.contains('hidden') === false) { 
+          Tone.Transport.start(); bgmSeq.start(0); 
+        }
       } else {
         btn.innerHTML = '<i class="fas fa-volume-mute"></i>';
         btn.style.backgroundColor = '#ccc';
@@ -296,17 +315,13 @@
     function sfxBenar() {
       if(!audioAktif) return;
       const now = Tone.now();
-      synthBenar.triggerAttackRelease("C5", "8n", now);
-      synthBenar.triggerAttackRelease("E5", "8n", now + 0.1);
-      synthBenar.triggerAttackRelease("G5", "4n", now + 0.2);
+      synthBenar.triggerAttackRelease("C6", "16n", now);
+      synthBenar.triggerAttackRelease("E6", "8n", now + 0.1);
     }
 
     function sfxSalah() {
       if(!audioAktif) return;
-      const now = Tone.now();
-      synthSalah.triggerAttackRelease("Eb3", "8n", now);
-      synthSalah.triggerAttackRelease("D3", "8n", now + 0.15);
-      synthSalah.triggerAttackRelease("Db3", "2n", now + 0.3);
+      synthSalah.triggerAttackRelease("C3", "8n");
     }
 
     function sfxTik() {
@@ -333,23 +348,28 @@
            let dataSheets = res.data || [];
            
            if(targetMapel && targetBab) {
-             let babDicari = targetBab.replace(/[^0-9]/g, '');
+             // Ekstrak angka target bab dari Arka Belajar (contoh: "Bab 1-2" -> ["1", "2"])
+             let matchTarget = targetBab.match(/\d+/g); 
              
              dbSoal = dataSheets.filter(s => {
                 let namaTabCocok = s.mapel.toLowerCase().trim() === targetMapel.toLowerCase().trim();
-                let angkaDiBabSumber = s.bab.toString().replace(/[^0-9]/g, '');
                 let babCocok = false;
                 
-                if (babDicari !== "") {
-                  if (babDicari === angkaDiBabSumber) { babCocok = true; }
-                  if (targetBab.includes("-")) {
-                     let pecah = targetBab.replace(/[^0-9-]/g, '').split('-');
-                     if(pecah.length === 2) {
-                        let awal = parseInt(pecah[0]); let akhir = parseInt(pecah[1]); let angkaSumber = parseInt(angkaDiBabSumber);
-                        if(angkaSumber >= awal && angkaSumber <= akhir) babCocok = true;
-                     }
+                // Cek pencocokan Bab yang cerdas
+                let angkaSumber = s.bab.toString().match(/\d+/);
+                
+                if (angkaSumber && matchTarget) {
+                  let sumberNum = parseInt(angkaSumber[0]);
+                  
+                  if(matchTarget.length === 1) {
+                     if (sumberNum === parseInt(matchTarget[0])) babCocok = true;
+                  } else if (matchTarget.length >= 2) {
+                     let awal = parseInt(matchTarget[0]);
+                     let akhir = parseInt(matchTarget[1]);
+                     if (sumberNum >= awal && sumberNum <= akhir) babCocok = true;
                   }
                 } else {
+                  // Fallback jika bab bukan angka (misal "UTS")
                   if (s.bab.toLowerCase().trim() === targetBab.toLowerCase().trim()) babCocok = true;
                 }
                 
@@ -360,7 +380,11 @@
              });
 
              if(dbSoal.length === 0) {
-               alert("Waduh! Soal untuk materi ini belum ada.\n\nBOCORAN DATA DARI APLIKASI:\nMapel Diminta: " + targetMapel + "\nBab Diminta: " + targetBab);
+               document.getElementById('infoMapelBab').innerText = "BANK SOAL KOSONG!";
+               document.getElementById('loadingText').innerText = "Tidak ada soal untuk materi ini.";
+               document.getElementById('loadingSub').innerText = "Hubungi guru atau cek Google Sheets.";
+               document.getElementById('screenLoading').querySelector('i').className = "fas fa-exclamation-triangle text-5xl text-yellow-500 mb-4";
+               return; // Jangan buka setup
              }
            } else {
              dbSoal = dataSheets; 
@@ -370,7 +394,9 @@
            document.getElementById('screenSetup').classList.remove('hidden');
         })
         .catch(err => {
-           alert("Gagal mengambil data dari Google Sheets. Pastikan URL Gas sudah benar dan ada koneksi internet.");
+           document.getElementById('loadingText').innerText = "GAGAL TERHUBUNG!";
+           document.getElementById('loadingSub').innerText = "Pastikan ada koneksi internet.";
+           document.getElementById('screenLoading').querySelector('i').className = "fas fa-wifi text-5xl text-red-500 mb-4";
         });
     };
 
@@ -386,11 +412,14 @@
       else document.getElementById('wadahWaktu').classList.add('hidden');
     }
 
+    function toggleWaktuBebas() {
+      const val = document.getElementById('setDurasi').value;
+      if (val === 'bebas') document.getElementById('inputWaktuBebas').classList.remove('hidden');
+      else document.getElementById('inputWaktuBebas').classList.add('hidden');
+    }
+
     async function mulaiKuis() {
-      if(dbSoal.length === 0) {
-        alert("Bank soal kosong atau materi belum dipilih!");
-        return;
-      }
+      if(dbSoal.length === 0) return;
 
       // 1. Inisialisasi Audio (Harus dipanggil setelah user klik sesuatu)
       await Tone.start();
@@ -409,7 +438,10 @@
       }
 
       soalAktif = dbSoal.filter(s => jenis === 'semua' || s.tipe === jenis);
-      if(soalAktif.length === 0) { alert("Tidak ada soal dengan jenis tersebut di bab ini."); return; }
+      if(soalAktif.length === 0) { 
+        document.getElementById('infoMapelBab').innerText = "JENIS SOAL INI KOSONG!";
+        return; 
+      }
       
       // Acak urutan soal
       soalAktif.sort(() => Math.random() - 0.5);
@@ -418,7 +450,12 @@
       // Cek durasi
       const mode = document.getElementById('setMode').value;
       if (mode === 'cepat') {
-         durasiPerSoal = parseInt(document.getElementById('setDurasi').value);
+         let dValue = document.getElementById('setDurasi').value;
+         if(dValue === 'bebas') {
+            durasiPerSoal = parseInt(document.getElementById('inputWaktuBebas').value) || 10;
+         } else {
+            durasiPerSoal = parseInt(dValue);
+         }
          document.getElementById('waktuContainer').classList.remove('hidden');
       } else {
          document.getElementById('waktuContainer').classList.add('hidden');
@@ -448,7 +485,7 @@
       if(isArab) elTeks.classList.add('teks-arab');
       elTeks.innerHTML = d.soal;
 
-      // Handle Media (Gambar/Video)
+      // Handle Media (Gambar/Video) - Sekarang di ATAS Teks Soal
       const wadahMedia = document.getElementById('tempatMedia');
       wadahMedia.innerHTML = '';
       wadahMedia.classList.add('hidden');
@@ -496,6 +533,11 @@
         document.getElementById('inputUraian').focus();
       }
 
+      // Sembunyikan notifikasi sebelumnya setiap berganti soal
+      document.getElementById('wadahNotif').classList.add('hidden');
+      document.getElementById('areaGanda').style.pointerEvents = 'auto'; 
+      document.getElementById('areaUraian').style.pointerEvents = 'auto';
+
       const mode = document.getElementById('setMode').value;
       if (mode === 'cepat') {
         waktuBerjalan = durasiPerSoal;
@@ -509,20 +551,25 @@
           if (waktuBerjalan <= 0) {
             clearInterval(waktuTimer);
             sfxSalah(); // SFX Waktu Habis = Salah
-            alert("WAKTU HABIS!");
-            indeksSoal++; tampilSoal();
+            
+            // Validasi Kunci Cerdas
+            let kunciSebenarnya = d.jawaban;
+            if(d.tipe === 'ganda') { kunciSebenarnya = konversiKunciJawaban(d.jawaban, d.opsi); }
+            
+            tampilkanNotif(false, "WAKTU HABIS! ⏰", "Jawaban yang benar:\n" + kunciSebenarnya);
           }
         }, 1000);
       }
     }
 
+    // Fungsi mengubah A, B, C, D dari Spreadsheet menjadi Teks Asli
     function konversiKunciJawaban(kunci, opsiArray) {
-       kunci = kunci.toString().trim();
-       if(kunci.toUpperCase() === 'A' && opsiArray[0]) return opsiArray[0];
-       if(kunci.toUpperCase() === 'B' && opsiArray[1]) return opsiArray[1];
-       if(kunci.toUpperCase() === 'C' && opsiArray[2]) return opsiArray[2];
-       if(kunci.toUpperCase() === 'D' && opsiArray[3]) return opsiArray[3];
-       return kunci; 
+       let k = kunci.toString().trim().toUpperCase();
+       if(k === 'A' && opsiArray[0]) return opsiArray[0];
+       if(k === 'B' && opsiArray[1]) return opsiArray[1];
+       if(k === 'C' && opsiArray[2]) return opsiArray[2];
+       if(k === 'D' && opsiArray[3]) return opsiArray[3];
+       return kunci; // Kembalikan apa adanya jika bukan A/B/C/D
     }
 
     function cekJawaban(jawabanUser) {
@@ -532,21 +579,55 @@
       let kunciSebenarnya = d.jawaban;
       if(d.tipe === 'ganda') { kunciSebenarnya = konversiKunciJawaban(d.jawaban, d.opsi); }
 
+      // Validasi jawaban
       if (jawabanUser.toString().trim().toLowerCase() === kunciSebenarnya.toString().trim().toLowerCase()) {
-        sfxBenar(); // Suara Benar
+        sfxBenar(); 
         skor += 10;
-        alert("HEBAT! Jawaban Benar. +10 Poin");
+        document.getElementById('infoSkor').innerText = `Skor: ${skor}`;
+        tampilkanNotif(true, "HEBAT! BENAR! 🎉", "+10 Poin untukmu.");
       } else {
-        sfxSalah(); // Suara Salah
-        alert("KURANG TEPAT! Jawaban yang benar adalah:\n" + kunciSebenarnya);
+        sfxSalah(); 
+        tampilkanNotif(false, "KURANG TEPAT! 😢", "Jawaban yang benar:\n" + kunciSebenarnya);
       }
-      indeksSoal++; tampilSoal();
     }
 
     function cekJawabanUraian() {
       const val = document.getElementById('inputUraian').value;
-      if(val.trim() === "") { alert("Ketik jawabannya dulu ya!"); return; }
+      if(val.trim() === "") { 
+        tampilkanNotif(false, "PERINGATAN", "Ketik jawabannya dulu ya!"); 
+        return; 
+      }
       cekJawaban(val);
+    }
+
+    function tampilkanNotif(isBenar, judul, pesan) {
+      // Matikan klik pada opsi agar anak tidak menjawab dua kali
+      document.getElementById('areaGanda').style.pointerEvents = 'none';
+      document.getElementById('areaUraian').style.pointerEvents = 'none';
+
+      const wadah = document.getElementById('wadahNotif');
+      const judulEl = document.getElementById('judulNotif');
+      const pesanEl = document.getElementById('pesanNotif');
+      const btn = document.getElementById('btnLanjut');
+
+      judulEl.innerText = judul;
+      pesanEl.innerText = pesan;
+
+      // Styling Custom In-Frame Notif
+      if(isBenar) {
+        wadah.className = "mt-6 p-4 rounded-xl border-4 border-black font-bold text-center bg-green-400 text-black";
+        btn.className = "brutal-btn success pixel-font text-sm mt-4";
+      } else {
+        wadah.className = "mt-6 p-4 rounded-xl border-4 border-black font-bold text-center bg-red-500 text-white";
+        btn.className = "brutal-btn secondary pixel-font text-sm mt-4 text-black";
+      }
+
+      wadah.classList.remove('hidden');
+    }
+
+    function lanjutSoal() {
+      indeksSoal++; 
+      tampilSoal();
     }
 
     function selesaiKuis() {
