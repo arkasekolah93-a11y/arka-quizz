@@ -34,9 +34,8 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      padding: 1rem;
+      padding: 0.5rem; /* Padding dikecilkan agar muat di layar */
       overflow-x: hidden;
-      /* Mencegah highlight biru saat di-tap di HP */
       -webkit-tap-highlight-color: transparent; 
     }
 
@@ -47,17 +46,19 @@
       border: 4px solid var(--dark);
       border-radius: 12px;
       box-shadow: 6px 6px 0px var(--dark);
-      padding: 1.5rem;
+      padding: 1rem; /* Padding dikecilkan */
       width: 100%;
       max-width: 500px;
-      margin-bottom: 1.5rem;
+      margin-bottom: 1rem;
       transition: all 0.1s ease;
+      display: flex;
+      flex-direction: column;
     }
 
     .brutal-btn {
       display: block;
       width: 100%;
-      padding: 1rem;
+      padding: 0.8rem; /* Padding tombol disesuaikan */
       font-size: 1rem;
       font-weight: 700;
       text-align: center;
@@ -68,7 +69,7 @@
       box-shadow: 4px 4px 0px var(--dark);
       cursor: pointer;
       transition: transform 0.1s, box-shadow 0.1s;
-      margin-bottom: 1rem;
+      margin-bottom: 0.75rem;
     }
 
     .brutal-btn:active { transform: translate(4px, 4px); box-shadow: 0px 0px 0px var(--dark); }
@@ -79,43 +80,40 @@
 
     .brutal-input {
       width: 100%;
-      padding: 0.75rem;
+      padding: 0.5rem;
       border: 3px solid var(--dark);
       border-radius: 8px;
       font-family: 'Fredoka', sans-serif;
-      font-size: 1.2rem;
+      font-size: 1.1rem;
       font-weight: 600;
-      margin-bottom: 1rem;
+      margin-bottom: 0.75rem;
       box-shadow: inset 3px 3px 0px rgba(0,0,0,0.1);
       text-align: center;
     }
 
-    /* Agar input readonly tidak terlihat abu-abu */
     .brutal-input[readonly] {
       background-color: white;
       cursor: text;
     }
     
-    .opsi-grid { display: grid; grid-template-columns: 1fr; gap: 10px; }
+    .opsi-grid { display: grid; grid-template-columns: 1fr; gap: 8px; }
     @media (min-width: 600px) { .opsi-grid { grid-template-columns: 1fr 1fr; } }
     
-    .hud { display: flex; justify-content: space-between; font-weight: bold; margin-bottom: 1rem; border-bottom: 4px solid var(--dark); padding-bottom: 0.5rem; }
+    .hud { display: flex; justify-content: space-between; font-weight: bold; margin-bottom: 0.5rem; border-bottom: 4px solid var(--dark); padding-bottom: 0.5rem; }
     .timer { font-size: 1.5rem; color: var(--danger); text-shadow: 2px 2px 0 #fff; }
     
     .hidden { display: none !important; }
 
-    /* Arab styling */
     .teks-arab { direction: rtl; text-align: right; font-size: 1.5rem; line-height: 2.2; font-family: 'Amiri', 'Scheherazade New', serif; }
     
-    .media-container { width: 100%; max-height: 250px; overflow: hidden; border: 3px solid #000; border-radius: 8px; margin-bottom: 1rem; display: flex; justify-content: center; align-items: center; background: #e2e8f0; }
-    .media-container img { max-width: 100%; max-height: 250px; object-fit: contain; }
-    .media-container iframe { width: 100%; height: 250px; border: none; }
+    .media-container { width: 100%; max-height: 200px; overflow: hidden; border: 3px solid #000; border-radius: 8px; margin-bottom: 1rem; display: flex; justify-content: center; align-items: center; background: #e2e8f0; }
+    .media-container img { max-width: 100%; max-height: 200px; object-fit: contain; }
+    .media-container iframe { width: 100%; height: 200px; border: none; }
 
-    /* Tombol Mute */
     #btnMute {
       position: fixed;
       top: 15px;
-      right: 15px;
+      left: 15px; /* Berpindah ke kiri atas */
       background: var(--secondary);
       border: 3px solid var(--dark);
       border-radius: 50%;
@@ -132,13 +130,12 @@
     }
     #btnMute:active { transform: translate(2px, 2px); box-shadow: 0px 0px 0px var(--dark); }
 
-    /* VIRTUAL KEYBOARD STYLING */
     #virtualKeyboard {
       background-color: #cbd5e1;
       padding: 0.5rem;
       border-radius: 8px;
       border: 3px solid var(--dark);
-      margin-bottom: 1rem;
+      margin-bottom: 0.5rem;
     }
     .vk-row {
       display: flex;
@@ -150,16 +147,16 @@
       background-color: white;
       border: 2px solid var(--dark);
       border-radius: 6px;
-      padding: 0.5rem 0;
+      padding: 0.4rem 0;
       font-family: 'Fredoka', sans-serif;
       font-weight: bold;
-      font-size: 1.1rem;
+      font-size: 1rem;
       flex-grow: 1;
       text-align: center;
       cursor: pointer;
       box-shadow: 2px 2px 0px var(--dark);
       user-select: none;
-      min-width: 30px;
+      min-width: 28px;
     }
     .vk-key:active {
       transform: translate(2px, 2px);
@@ -179,7 +176,7 @@
     <i class="fas fa-volume-up"></i>
   </button>
 
-  <h1 class="pixel-font text-white text-xl md:text-2xl mb-6 mt-4 text-center" style="text-shadow: 3px 3px 0 #000, -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;">
+  <h1 class="pixel-font text-white text-xl md:text-2xl mb-4 mt-2 text-center" style="text-shadow: 3px 3px 0 #000, -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;">
     ARKA QUIZZ
   </h1>
 
@@ -214,7 +211,7 @@
       <input type="number" id="inputWaktuBebas" class="brutal-input hidden border-red-500" style="text-align: left;" placeholder="Ketik detik (misal: 45)" min="1">
     </div>
 
-    <label class="font-bold mb-1 block mt-2">Jenis Soal:</label>
+    <label class="font-bold mb-1 block mt-1">Jenis Soal:</label>
     <select id="setJenis" class="brutal-input" style="text-align: left;">
       <option value="semua">Campuran (Ganda & Uraian)</option>
       <option value="ganda">Hanya Pilihan Ganda</option>
@@ -230,7 +227,7 @@
     </select>
     <input type="number" id="inputJumlahBebas" class="brutal-input hidden" style="text-align: left;" placeholder="Masukkan jumlah..." min="1">
 
-    <button id="btnMulaiKuis" class="brutal-btn success mt-4 pixel-font text-sm" onclick="mulaiKuis()">MULAI MISI 🚀</button>
+    <button id="btnMulaiKuis" class="brutal-btn success mt-2 pixel-font text-sm" onclick="mulaiKuis()">MULAI MISI 🚀</button>
   </div>
 
   <div id="screenPlay" class="brutal-box hidden">
@@ -239,28 +236,25 @@
       <div id="infoSkor">Skor: 0</div>
     </div>
     
-    <div id="waktuContainer" class="text-center mb-4 hidden">
+    <div id="waktuContainer" class="text-center mb-2 hidden">
       <span class="pixel-font timer" id="timerAngka">10</span>
     </div>
 
+    <!-- Posisi Media dipindah ke Atas Teks Pertanyaan -->
     <div id="tempatMedia" class="media-container hidden"></div>
 
-    <div id="teksSoal" class="text-lg font-bold mb-6">Pertanyaan muncul di sini?</div>
+    <div id="teksSoal" class="text-lg font-bold mb-4">Pertanyaan muncul di sini?</div>
     
     <div id="areaGanda" class="opsi-grid hidden"></div>
 
-    <div id="areaUraian" class="hidden">
-      <!-- Input dibuat readonly agar keyboard HP tidak muncul -->
-      <input type="text" id="inputUraian" class="brutal-input" dir="auto" placeholder="Ketuk tombol di bawah..." readonly>
-      
-      <!-- Wadah Virtual Keyboard -->
+    <div id="areaUraian" class="hidden flex-grow">
+      <!-- Input dir="auto" otomatis menyesuaikan bahasa -->
+      <input type="text" id="inputUraian" class="brutal-input" dir="auto" placeholder="Ketik jawabanmu..." readonly>
       <div id="virtualKeyboard"></div>
-
-      <button class="brutal-btn primary" onclick="cekJawabanUraian()">JAWAB</button>
+      <button class="brutal-btn primary mt-auto" onclick="cekJawabanUraian()">JAWAB</button>
     </div>
 
-    <!-- Kotak Notifikasi In-Frame -->
-    <div id="wadahNotif" class="hidden mt-4 p-4 rounded-xl border-4 border-black font-bold text-center">
+    <div id="wadahNotif" class="hidden mt-2 p-4 rounded-xl border-4 border-black font-bold text-center flex-grow flex flex-col justify-center">
       <h3 id="judulNotif" class="text-2xl mb-2 pixel-font">BENAR!</h3>
       <p id="pesanNotif" class="mb-4 text-lg">Kamu dapat 10 poin.</p>
       <button id="btnLanjut" class="brutal-btn success pixel-font text-sm" onclick="lanjutSoal()">LANJUTKAN >></button>
@@ -276,20 +270,16 @@
   </div>
 
   <script>
-    // --- KONFIGURASI LINK SPREADSHEET GAS BAPAK ---
     const GAS_URL = "https://script.google.com/macros/s/AKfycbxOeIJAjNpZ4Qf0uYom7l0fvSNh25D4jHLMjG3-9-DZjmcBLcf_Ie1Ps__XkithIHP4/exec";
     
     let dbSoal = [];
     let soalAktif = [];
     let indeksSoal = 0;
     let skor = 0;
-    
     let waktuTimer;
     let waktuBerjalan;
     let durasiPerSoal = 10;
 
-    // --- KONFIGURASI VIRTUAL KEYBOARD ---
-    // Simbol ◌ (U+25CC) digunakan sebagai dudukan harakat
     const VK_LAYOUTS = {
       latin: [
         ['1','2','3','4','5','6','7','8','9','0'],
@@ -303,48 +293,49 @@
         ['ض','ص','ث','ق','ف','غ','ع','ه','خ','ح','ج','د'],
         ['ش','س','ي','ب','ل','ا','ت','ن','م','ك','ط'],
         ['ئ','ء','ؤ','ر','ى','ة','و','ز','ظ'],
-        ['\u064E','\u0650','\u064F','\u064B','\u064D','\u064C','\u0652','\u0651'], // Harakat tanpa dudukan untuk diketik
+        ['\u064E','\u0650','\u064F','\u064B','\u064D','\u064C','\u0652','\u0651'],
         ['{space}', '{backspace}']
       ]
     };
 
-    // Harakat khusus untuk tampilan (dengan titik-titik lingkaran)
     const TAMPILAN_HARAKAT = {
       '\u064E': '◌َ', '\u0650': '◌ِ', '\u064F': '◌ُ', 
       '\u064B': '◌ً', '\u064D': '◌ٍ', '\u064C': '◌ٌ', 
       '\u0652': '◌ْ', '\u0651': '◌ّ'
     };
 
-    let currentKeyboard = 'latin'; // Default
+    let currentKeyboard = 'latin';
 
-    // --- LOGIKA AUDIO (TONE.JS) ---
     let audioAktif = true;
     let bgmSeq, synthBenar, synthSalah, synthTik;
 
     function initAudio() {
+      // 1. BGM Arcade Bersemangat
       const bgmSynth = new Tone.PolySynth(Tone.Synth, {
         oscillator: { type: "square" },
         envelope: { attack: 0.05, decay: 0.2, sustain: 0.2, release: 1 }
       }).toDestination();
       bgmSynth.volume.value = -25; 
-
       bgmSeq = new Tone.Sequence((time, note) => {
         bgmSynth.triggerAttackRelease(note, "8n", time);
       }, ["C4", "E4", "G4", "E4", "A4", "G4", "C5", "G4"], "4n");
       Tone.Transport.bpm.value = 130;
 
+      // 2. SFX Benar (Chime Lembut)
       synthBenar = new Tone.PolySynth(Tone.Synth, {
-        oscillator: { type: "triangle" },
-        envelope: { attack: 0.05, decay: 0.3, sustain: 0.2, release: 1 }
+        oscillator: { type: "sine" },
+        envelope: { attack: 0.01, decay: 0.1, sustain: 0.1, release: 1 }
       }).toDestination();
       synthBenar.volume.value = -10;
 
-      synthSalah = new Tone.PolySynth(Tone.Synth, {
+      // 3. SFX Salah (Buzzer Pendek)
+      synthSalah = new Tone.Synth({
         oscillator: { type: "sawtooth" },
         envelope: { attack: 0.01, decay: 0.1, sustain: 0, release: 0.1 }
       }).toDestination();
       synthSalah.volume.value = -15;
 
+      // 4. SFX Tik Tok
       synthTik = new Tone.MembraneSynth().toDestination();
       synthTik.volume.value = -15;
     }
@@ -380,15 +371,12 @@
     function sfxBenar() {
       if(!audioAktif) return;
       const now = Tone.now();
-      synthBenar.triggerAttackRelease("C5", "16n", now);
-      synthBenar.triggerAttackRelease("E5", "16n", now + 0.1);
-      synthBenar.triggerAttackRelease("G5", "8n", now + 0.2);
+      synthBenar.triggerAttackRelease(["C5", "E5", "G5"], "8n", now);
     }
 
     function sfxSalah() {
       if(!audioAktif) return;
-      synthSalah.triggerAttackRelease("C3", "16n");
-      setTimeout(() => synthSalah.triggerAttackRelease("A2", "8n"), 150);
+      synthSalah.triggerAttackRelease("C3", "8n");
     }
 
     function sfxTik() {
@@ -396,7 +384,6 @@
       synthTik.triggerAttackRelease("C4", "32n");
     }
 
-    // --- INISIALISASI & AMBIL DATA DARI GOOGLE SHEETS ---
     window.onload = function() {
       const urlParams = new URLSearchParams(window.location.search);
       let targetMapel = urlParams.get('mapel');
@@ -444,7 +431,7 @@
              if(dbSoal.length === 0) {
                document.getElementById('infoMapelBab').innerText = "BANK SOAL KOSONG!";
                document.getElementById('loadingText').innerText = "Waduh! Soal belum tersedia.";
-               document.getElementById('loadingSub').innerText = `Bocoran data: Kelas ${targetKelas}, Mapel ${targetMapel}, Bab ${targetBab}`;
+               document.getElementById('loadingSub').innerText = `Bocoran data dibaca: Kelas ${targetKelas}, Mapel ${targetMapel}, Bab ${targetBab}`;
                document.getElementById('screenLoading').querySelector('i').className = "fas fa-exclamation-triangle text-5xl text-yellow-500 mb-4";
                return; 
              }
@@ -480,10 +467,9 @@
       else document.getElementById('inputWaktuBebas').classList.add('hidden');
     }
 
-    // --- FUNGSI VIRTUAL KEYBOARD ---
     function renderKeyboard(jenisLayout) {
       const container = document.getElementById('virtualKeyboard');
-      container.innerHTML = ''; // Bersihkan keyboard sebelumnya
+      container.innerHTML = ''; 
       
       const layout = VK_LAYOUTS[jenisLayout];
       const isArab = jenisLayout === 'arab';
@@ -492,7 +478,6 @@
         const rowDiv = document.createElement('div');
         rowDiv.className = 'vk-row';
         
-        // Reverse array untuk baris arab agar dari kanan ke kiri
         let tombolBaris = [...baris];
         if (isArab) tombolBaris.reverse();
 
@@ -509,7 +494,6 @@
             btn.classList.add('vk-key-wide', 'vk-key-danger');
             btn.onclick = () => hapusVK();
           } else {
-            // Tampilkan harakat dengan dudukan agar mudah dilihat
             btn.innerHTML = TAMPILAN_HARAKAT[kunci] || kunci; 
             btn.onclick = () => ketikVK(kunci);
           }
@@ -611,7 +595,7 @@
           } else if(link.match(/\.(jpeg|jpg|gif|png)$/i)) {
               wadahMedia.innerHTML = `<img src="${link}" alt="Ilustrasi Soal">`;
           } else {
-              wadahMedia.innerHTML = `<a href="${link}" target="_blank" class="text-blue-600 underline">Buka Referensi Media</a>`;
+              wadahMedia.innerHTML = `<a href="${link}" target="_blank" class="text-blue-600 underline">Buka Referensi</a>`;
           }
       }
 
@@ -638,13 +622,12 @@
         document.getElementById('areaUraian').classList.remove('hidden');
         document.getElementById('inputUraian').value = '';
         
-        // AUTO DETEKSI KEYBOARD VIRTUAL BERDASARKAN SOAL!
         renderKeyboard(isArab ? 'arab' : 'latin');
       }
 
       document.getElementById('wadahNotif').classList.add('hidden');
       document.getElementById('areaGanda').style.pointerEvents = 'auto'; 
-      document.getElementById('virtualKeyboard').style.pointerEvents = 'auto';
+      document.getElementById('areaUraian').style.pointerEvents = 'auto';
 
       const mode = document.getElementById('setMode').value;
       if (mode === 'cepat') {
@@ -688,7 +671,6 @@
       let teksJawab = jawabanUser.toString().trim().toLowerCase();
       let teksKunci = kunciSebenarnya.toString().trim().toLowerCase();
 
-      // Toleransi menghapus spasi ekstra pada jawaban essay Arab/Latin
       if(d.tipe !== 'ganda') {
          teksJawab = teksJawab.replace(/\s+/g, '');
          teksKunci = teksKunci.replace(/\s+/g, '');
@@ -716,7 +698,11 @@
 
     function tampilkanNotif(isBenar, judul, pesan) {
       document.getElementById('areaGanda').style.pointerEvents = 'none';
-      document.getElementById('virtualKeyboard').style.pointerEvents = 'none'; // Matikan keyboard saat notif muncul
+      document.getElementById('areaUraian').style.pointerEvents = 'none';
+
+      // Sembunyikan area soal agar notifikasi naik ke atas
+      document.getElementById('areaGanda').classList.add('hidden');
+      document.getElementById('areaUraian').classList.add('hidden');
 
       const wadah = document.getElementById('wadahNotif');
       const judulEl = document.getElementById('judulNotif');
@@ -727,10 +713,10 @@
       pesanEl.innerText = pesan;
 
       if(isBenar) {
-        wadah.className = "mt-4 p-4 rounded-xl border-4 border-black font-bold text-center bg-green-400 text-black";
+        wadah.className = "mt-2 p-4 rounded-xl border-4 border-black font-bold text-center bg-green-400 text-black flex-grow flex flex-col justify-center";
         btn.className = "brutal-btn success pixel-font text-sm mt-4";
       } else {
-        wadah.className = "mt-4 p-4 rounded-xl border-4 border-black font-bold text-center bg-red-500 text-white";
+        wadah.className = "mt-2 p-4 rounded-xl border-4 border-black font-bold text-center bg-red-500 text-white flex-grow flex flex-col justify-center";
         btn.className = "brutal-btn secondary pixel-font text-sm mt-4 text-black";
       }
 
