@@ -594,6 +594,14 @@
               }
           } else if(link.match(/\.(jpeg|jpg|gif|png)$/i)) {
               wadahMedia.innerHTML = `<img src="${link}" alt="Ilustrasi Soal">`;
+          } else if (link.includes('drive.google.com')) {
+              // FITUR BARU: Menangani link Google Drive agar langsung tampil di dalam aplikasi
+              let matchId = link.match(/[-\w]{25,}/);
+              if (matchId) {
+                  wadahMedia.innerHTML = `<iframe src="https://drive.google.com/file/d/${matchId[0]}/preview" allowfullscreen></iframe>`;
+              } else {
+                  wadahMedia.innerHTML = `<a href="${link}" target="_blank" class="text-blue-600 underline">Buka Referensi Google Drive</a>`;
+              }
           } else {
               wadahMedia.innerHTML = `<a href="${link}" target="_blank" class="text-blue-600 underline">Buka Referensi</a>`;
           }
